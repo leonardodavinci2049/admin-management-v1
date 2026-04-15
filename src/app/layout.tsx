@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree } from "next/font/google";
+import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import Header02 from "@/components/header/Header02";
 import { Toaster } from "sonner";
+import Header02 from "@/components/header/Header02";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { cn } from "@/lib/utils";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
