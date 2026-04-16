@@ -2,7 +2,6 @@ import "server-only";
 
 import { cacheLife, cacheTag } from "next/cache";
 import { createLogger } from "@/core/logger";
-import type { TblLogLogin, TblLogOperation } from "@/database/schema";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import logService from "./log.service";
 import type {
@@ -12,15 +11,33 @@ import type {
 
 const logger = createLogger("LogCachedService");
 
-export type LogLoginListItem = TblLogLogin & {
+export type LogLoginListItem = {
+  log_id: number;
+  app_id: number;
+  organization_Id: string;
+  organization_name: string;
+  user_id: string;
   user_name: string;
   user_email: string;
-  organization_name: string;
+  module_id: number;
+  record_id: string;
+  log: string;
+  note: string;
+  createdAt: Date;
 };
-export type LogOperationListItem = TblLogOperation & {
+export type LogOperationListItem = {
+  log_id: number;
+  app_id: number;
   app_name: string;
+  organization_Id: string;
   organization_name: string;
+  user_id: string;
   user_name: string;
+  module_id: number;
+  record_id: string;
+  log: string;
+  note: string;
+  createdAt: Date;
 };
 
 function transformLogLogin(log: TblLogLoginFindAll): LogLoginListItem {
