@@ -45,7 +45,7 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton title={item.title}>
                   {item.icon}
                   <span>{item.title}</span>
                   <HugeiconsIcon

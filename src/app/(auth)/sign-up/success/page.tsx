@@ -1,6 +1,6 @@
-import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import RegistrationSuccessContent from "./RegistrationSuccessContent";
 
 type RegistrationSuccessSearchParams = Promise<{

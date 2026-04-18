@@ -1,14 +1,15 @@
 "use client";
 
 import {
-  CheckmarkBadgeIcon,
-  CreditCardIcon,
-  LogoutIcon,
-  NotificationIcon,
-  SparklesIcon,
-  UnfoldMoreIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from "lucide-react";
+import { toast } from "sonner";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function NavUser({
   user,
@@ -36,6 +38,22 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
+  const handleLogout = async () => {
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Logged out successfully");
+            window.location.href = "/sign-in";
+          },
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to logout");
+      console.error(error);
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -54,11 +72,7 @@ export function NavUser({
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
-              <HugeiconsIcon
-                icon={UnfoldMoreIcon}
-                strokeWidth={2}
-                className="ml-auto size-4"
-              />
+              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -82,28 +96,28 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <HugeiconsIcon icon={SparklesIcon} strokeWidth={2} />
+                <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <HugeiconsIcon icon={CheckmarkBadgeIcon} strokeWidth={2} />
+                <BadgeCheck />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} />
+                <CreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <HugeiconsIcon icon={NotificationIcon} strokeWidth={2} />
+                <Bell />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
