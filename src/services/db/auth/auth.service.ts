@@ -43,6 +43,13 @@ const SlugSchema = z
   .min(1, "Slug é obrigatório")
   .max(255, "Slug muito longo")
   .regex(/^[a-z0-9-]+$/, "Slug inválido");
+const EmailSchema = z
+  .string()
+  .trim()
+  .min(1, "Email is required")
+  .max(255, "Email is too long")
+  .email("Invalid email address")
+  .transform((email) => email.toLowerCase());
 
 type MemberPersonIdColumn = "personId" | "person_id" | null;
 
@@ -93,6 +100,21 @@ function validateSlug(slug: string, fieldName: string): void {
       fieldName,
     );
   }
+}
+
+/**
+ * Validates and normalizes the provided email
+ */
+function validateAndNormalizeEmail(email: string, fieldName: string): string {
+  const result = EmailSchema.safeParse(email);
+  if (!result.success) {
+    throw new AuthValidationError(
+      `${fieldName}: ${result.error.issues[0].message}`,
+      fieldName,
+    );
+  }
+
+  return result.data;
 }
 
 /**
@@ -258,6 +280,60 @@ async function findUserById(params: {
     };
   } catch (error) {
     return handleError<User>(error, "findUserById");
+  }
+}
+
+/**
+ * Finds a user by email
+ *
+ * Intended for administrative lookups and server-side flows that need a direct
+ * user lookup without going through Better Auth client APIs.
+ *
+ * @example
+ * ```typescript
+ * const response = await AuthService.findUserByEmail({
+ *   email: "user@example.com",
+ * });
+ * if (response.success && response.data) {
+ *   console.log(response.data.id);
+ * }
+ * ```
+ */
+async function findUserByEmail(params: {
+  email: string;
+}): Promise<ServiceResponse<User>> {
+  try {
+    const normalizedEmail = validateAndNormalizeEmail(params.email, "email");
+
+    const query = `
+      SELECT 
+        id, name, email, emailVerified, image, 
+        createdAt, updatedAt, twoFactorEnabled, 
+        role, banned, banReason, banExpires
+      FROM ${AUTH_TABLES.USER}
+      WHERE email = ?
+      LIMIT 1
+    `;
+
+    const results = await dbService.selectExecute<UserEntity>(query, [
+      normalizedEmail,
+    ]);
+
+    if (results.length === 0) {
+      return {
+        success: true,
+        data: null,
+        error: null,
+      };
+    }
+
+    return {
+      success: true,
+      data: mapUserEntityToDto(results[0]),
+      error: null,
+    };
+  } catch (error) {
+    return handleError<User>(error, "findUserByEmail");
   }
 }
 
@@ -1251,6 +1327,7 @@ async function findNonMemberUsers(params: {
 export const AuthService = {
   // User Methods
   findUserById,
+  findUserByEmail,
   findUsersExcludingIds,
 
   // Member Methods
