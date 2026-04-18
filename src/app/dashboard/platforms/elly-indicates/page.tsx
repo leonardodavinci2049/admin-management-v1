@@ -1,8 +1,5 @@
-
 const EllyIndicatesPage = () => {
-  return (
-    <div>Elly Indicates Page</div>
-  )
-}
+  return <div>Elly Indicates Page</div>;
+};
 
-export default EllyIndicatesPage
+export default EllyIndicatesPage;
