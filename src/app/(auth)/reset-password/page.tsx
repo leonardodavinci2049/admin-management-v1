@@ -69,6 +69,7 @@ function ResetPasswordUI({ token }: ResetPasswordUIProps) {
               src="/images/auth/logo-auth-white.png"
               alt="Dashboard Background"
               fill
+              sizes="(min-width: 1280px) 432px, (min-width: 1024px) calc(50vw - 6rem), 0px"
               className="object-contain object-left dark:hidden"
               priority
             />
@@ -76,6 +77,7 @@ function ResetPasswordUI({ token }: ResetPasswordUIProps) {
               src="/images/auth/logo-auth-dark.png"
               alt="Dashboard Background"
               fill
+              sizes="(min-width: 1280px) 432px, (min-width: 1024px) calc(50vw - 6rem), 0px"
               className="hidden object-contain object-left dark:block"
               priority
             />
