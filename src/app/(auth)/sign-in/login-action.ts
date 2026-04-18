@@ -2,7 +2,7 @@
 
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import {
   errorMessages,
   validateLoginData,

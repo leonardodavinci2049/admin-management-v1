@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 
 export async function AuthGate({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({
@@ -8,6 +8,10 @@ export async function AuthGate({ children }: { children: React.ReactNode }) {
   });
 
   if (!session) {
+    redirect("/sign-in");
+  }
+
+  if (session.user.role !== "admin") {
     redirect("/sign-in");
   }
 
