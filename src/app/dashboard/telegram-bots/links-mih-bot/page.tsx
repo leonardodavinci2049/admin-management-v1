@@ -1,9 +1,5 @@
-
-
 const LinksMihBotPage = () => {
-  return (
-    <div>Links Mih Bot Page</div>
-  )
-}
+  return <div>Links Mih Bot Page</div>;
+};
 
-export default LinksMihBotPage
+export default LinksMihBotPage;

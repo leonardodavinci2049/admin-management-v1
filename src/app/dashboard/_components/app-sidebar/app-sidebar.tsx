@@ -68,7 +68,6 @@ const data = {
           title: "Bot Support Mih",
           url: "/dashboard/telegram-bots/mih-bot-support",
         },
-
       ],
     },
 
