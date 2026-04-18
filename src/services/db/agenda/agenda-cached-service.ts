@@ -13,7 +13,6 @@ import type {
 
 interface AgendaEntriesParams {
   userId: string;
-  organizationId?: string | null;
   startDate: string;
   endDate: string;
   status?: AgendaEntryStatus;
@@ -22,7 +21,6 @@ interface AgendaEntriesParams {
 
 interface AgendaNotificationsParams {
   userId: string;
-  organizationId?: string | null;
   dueBeforeKey: string;
 }
 
@@ -49,7 +47,6 @@ export async function getAgendaEntriesForRange(
 
   const response = await AgendaService.findAgendaEntriesByUser({
     userId: params.userId,
-    organizationId: params.organizationId,
     startDate: params.startDate,
     endDate: params.endDate,
     status: params.status,
@@ -76,7 +73,6 @@ export async function getAgendaNotificationsForHeader(
 
   const response = await AgendaService.findAgendaNotificationsByUser({
     userId: params.userId,
-    organizationId: params.organizationId,
     unreadOnly: true,
     dueBefore: params.dueBeforeKey,
     limit: 12,

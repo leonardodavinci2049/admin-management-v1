@@ -16,5 +16,4 @@ const MyhCouponsPage = () => {
   );
 };
 
-
 export default MyhCouponsPage;

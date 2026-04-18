@@ -30,14 +30,6 @@ const IdSchema = z
   .min(1, "ID é obrigatório")
   .max(128, "ID muito longo");
 
-const OptionalOrganizationIdSchema = z
-  .string()
-  .trim()
-  .min(1, "organizationId é obrigatório")
-  .max(128, "organizationId muito longo")
-  .nullable()
-  .optional();
-
 const TitleSchema = z
   .string()
   .trim()
@@ -82,20 +74,6 @@ function validateId(id: string, fieldName: string): string {
   }
 
   return result.data;
-}
-
-function validateOrganizationId(organizationId?: string | null): string | null {
-  const normalizedValue = organizationId ?? null;
-  const result = OptionalOrganizationIdSchema.safeParse(normalizedValue);
-
-  if (!result.success) {
-    throw new AgendaValidationError(
-      `organizationId: ${result.error.issues[0].message}`,
-      "organizationId",
-    );
-  }
-
-  return result.data ?? null;
 }
 
 function validateTitle(title: string): string {
@@ -340,12 +318,10 @@ function handleModifyError(error: unknown, operation: string): ModifyResponse {
 async function findAgendaEntryById(params: {
   entryId: string;
   userId: string;
-  organizationId?: string | null;
 }): Promise<ServiceResponse<AgendaEntry>> {
   try {
     const entryId = validateId(params.entryId, "entryId");
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
 
     const query = `
       SELECT
@@ -355,15 +331,12 @@ async function findAgendaEntryById(params: {
       FROM ${AGENDA_TABLES.ENTRY}
       WHERE id = ?
         AND userId = ?
-        AND (? IS NULL OR organizationId = ?)
       LIMIT 1
     `;
 
     const results = await dbService.selectExecute<AgendaEntryEntity>(query, [
       entryId,
       userId,
-      organizationId,
-      organizationId,
     ]);
 
     if (results.length === 0) {
@@ -382,7 +355,6 @@ async function findAgendaEntryById(params: {
 
 async function findAgendaEntriesByUser(params: {
   userId: string;
-  organizationId?: string | null;
   startDate?: Date | string;
   endDate?: Date | string;
   status?: AgendaEntryStatus;
@@ -392,16 +364,10 @@ async function findAgendaEntriesByUser(params: {
 }): Promise<ServiceResponse<AgendaEntry[]>> {
   try {
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
     const limit = validateLimit(params.limit);
 
     const conditions = ["userId = ?"];
     const queryParams: Array<string | number | Date | null> = [userId];
-
-    if (organizationId) {
-      conditions.push("organizationId = ?");
-      queryParams.push(organizationId);
-    }
 
     if (params.startDate) {
       conditions.push("scheduledAt >= ?");
@@ -463,7 +429,6 @@ async function findAgendaEntriesByUser(params: {
 async function createAgendaEntry(params: {
   entryId?: string;
   userId: string;
-  organizationId?: string | null;
   entryType: AgendaEntryType;
   title: string;
   notes?: string | null;
@@ -476,7 +441,6 @@ async function createAgendaEntry(params: {
       ? validateId(params.entryId, "entryId")
       : randomUUID();
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
     const entryType = validateEntryType(params.entryType);
     const title = validateTitle(params.title);
     const notes = validateNotes(params.notes);
@@ -495,7 +459,7 @@ async function createAgendaEntry(params: {
 
     const result = await dbService.modifyExecute(query, [
       id,
-      organizationId,
+      null,
       userId,
       entryType,
       title,
@@ -518,7 +482,6 @@ async function createAgendaEntry(params: {
 async function updateAgendaEntry(params: {
   entryId: string;
   userId: string;
-  organizationId?: string | null;
   entryType?: AgendaEntryType;
   title?: string;
   notes?: string | null;
@@ -530,7 +493,6 @@ async function updateAgendaEntry(params: {
   try {
     const entryId = validateId(params.entryId, "entryId");
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
 
     const setClauses: string[] = [];
     const queryParams: Array<string | Date | null> = [];
@@ -583,19 +545,13 @@ async function updateAgendaEntry(params: {
 
     setClauses.push("updatedAt = NOW()");
 
-    const organizationFilter = organizationId ? " AND organizationId = ?" : "";
-
     queryParams.push(entryId, userId);
-
-    if (organizationId) {
-      queryParams.push(organizationId);
-    }
 
     const query = `
       UPDATE ${AGENDA_TABLES.ENTRY}
       SET ${setClauses.join(", ")}
       WHERE id = ?
-        AND userId = ?${organizationFilter}
+        AND userId = ?
     `;
 
     const result = await dbService.modifyExecute(query, queryParams);
@@ -616,27 +572,17 @@ async function updateAgendaEntry(params: {
 async function deleteAgendaEntry(params: {
   entryId: string;
   userId: string;
-  organizationId?: string | null;
 }): Promise<ModifyResponse> {
   try {
     const entryId = validateId(params.entryId, "entryId");
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
 
-    const query = organizationId
-      ? `
-        DELETE FROM ${AGENDA_TABLES.ENTRY}
-        WHERE id = ? AND userId = ? AND organizationId = ?
-      `
-      : `
-        DELETE FROM ${AGENDA_TABLES.ENTRY}
-        WHERE id = ? AND userId = ?
-      `;
+    const query = `
+      DELETE FROM ${AGENDA_TABLES.ENTRY}
+      WHERE id = ? AND userId = ?
+    `;
 
-    const result = await dbService.modifyExecute(
-      query,
-      organizationId ? [entryId, userId, organizationId] : [entryId, userId],
-    );
+    const result = await dbService.modifyExecute(query, [entryId, userId]);
 
     return {
       success: result.affectedRows > 0,
@@ -653,24 +599,17 @@ async function deleteAgendaEntry(params: {
 
 async function findAgendaNotificationsByUser(params: {
   userId: string;
-  organizationId?: string | null;
   unreadOnly?: boolean;
   dueBefore?: Date | string;
   limit?: number;
 }): Promise<ServiceResponse<AgendaNotification[]>> {
   try {
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
     const unreadOnly = validateBoolean(params.unreadOnly, "unreadOnly");
     const limit = validateLimit(params.limit);
 
     const conditions = ["userId = ?"];
     const queryParams: Array<string | number | Date> = [userId];
-
-    if (organizationId) {
-      conditions.push("organizationId = ?");
-      queryParams.push(organizationId);
-    }
 
     if (unreadOnly) {
       conditions.push("readAt IS NULL");
@@ -757,7 +696,6 @@ async function findAgendaNotificationByEntryId(params: {
 async function createAgendaNotification(params: {
   agendaEntryId: string;
   userId: string;
-  organizationId?: string | null;
   title: string;
   message?: string | null;
   notifyAt: Date | string;
@@ -766,7 +704,6 @@ async function createAgendaNotification(params: {
     const id = randomUUID();
     const agendaEntryId = validateId(params.agendaEntryId, "agendaEntryId");
     const userId = validateId(params.userId, "userId");
-    const organizationId = validateOrganizationId(params.organizationId);
     const title = validateTitle(params.title);
     const message = validateMessage(params.message);
     const notifyAt = validateDateInput(params.notifyAt, "notifyAt");
@@ -783,7 +720,7 @@ async function createAgendaNotification(params: {
     const result = await dbService.modifyExecute(query, [
       id,
       agendaEntryId,
-      organizationId,
+      null,
       userId,
       title,
       message,
