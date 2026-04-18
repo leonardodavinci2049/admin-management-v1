@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { Suspense } from "react";
 
 import ModeToggle from "@/components/theme/mode-toggle";
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth/auth";
 
 import { NavUser } from "../app-sidebar/nav-user";
 
@@ -30,10 +32,14 @@ export async function SiteHeaderWithBreadcrumb({
     { label: "Analytics", isActive: true },
   ],
 }: SiteHeaderWithBreadcrumbProps) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: "",
+    name: session?.user.name ?? "",
+    email: session?.user.email ?? "",
+    avatar: session?.user.image ?? "",
   };
 
   return (

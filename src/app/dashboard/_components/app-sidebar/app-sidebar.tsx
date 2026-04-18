@@ -2,10 +2,7 @@
 
 import {
   AudioWave01Icon,
-  BookOpen02Icon,
-  CommandIcon,
   ComputerTerminalIcon,
-  CropIcon,
   LayoutBottomIcon,
   MapsIcon,
   PieChartIcon,
@@ -21,188 +18,111 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useSession } from "@/lib/auth/auth-client";
 import { NavMain } from "./nav-main";
 import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
+import { SidebarLogo } from "./sidebar-logo";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
-      name: "Acme Inc",
-      logo: <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} />,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
+      name: "WinERP",
       logo: <HugeiconsIcon icon={AudioWave01Icon} strokeWidth={2} />,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: <HugeiconsIcon icon={CommandIcon} strokeWidth={2} />,
-      plan: "Free",
+      plan: "Distribuidora",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Plataformas",
       url: "#",
       icon: <HugeiconsIcon icon={ComputerTerminalIcon} strokeWidth={2} />,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Cupons da Myh",
+          url: "/dashboard/platforms/myh-coupons",
         },
+
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Elly Indica",
+          url: "/dashboard/platforms/elly-indicates",
         },
       ],
     },
     {
-      title: "Api-Aliexpress",
+      title: "Bots Telegram",
       url: "#",
       icon: <HugeiconsIcon icon={RoboticIcon} strokeWidth={2} />,
       items: [
         {
-          title: "Categorias",
-          url: "/dashboard/api-aliexpress/category",
+          title: "Bot Links Bianca",
+          url: "/dashboard/telegram-bots/links-bianca-bot",
         },
         {
-          title: "Gerar Link",
-          url: "/dashboard/api-aliexpress/generate-url",
+          title: "Bot Links Mih",
+          url: "/dashboard/telegram-bots/links-mih-bot",
         },
         {
-          title: "Lista de Produtos",
-          url: "/dashboard/api-aliexpress/product-list-url",
+          title: "Bot Support Mih",
+          url: "/dashboard/telegram-bots/mih-bot-support",
         },
-        {
-          title: "Detalhe Produto",
-          url: "/dashboard/api-aliexpress/product-detail",
-        },
-        {
-          title: "Detalhe SKU",
-          url: "/dashboard/api-aliexpress/product-detail-sku",
-        },
+
       ],
     },
+
     {
       title: "Relatórios",
-      url: "#",
-      icon: <HugeiconsIcon icon={BookOpen02Icon} strokeWidth={2} />,
-      items: [
-        {
-          title: "Panel",
-          url: "/dashboard/report/panel",
-        },
-        {
-          title: "Geral",
-          url: "/dashboard/report/geral",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API AliExpress",
-      url: "#",
-      icon: <HugeiconsIcon icon={ComputerTerminalIcon} strokeWidth={2} />,
-      items: [
-        {
-          title: "Categorias",
-          url: "/dashboard/api-aliexpress/category",
-        },
-        {
-          title: "Gerar Link",
-          url: "/dashboard/api-aliexpress/generate-url",
-        },
-        {
-          title: "Detalhe Produto",
-          url: "/dashboard/api-aliexpress/product-detail",
-        },
-        {
-          title: "Detalhe SKU",
-          url: "/dashboard/api-aliexpress/product-detail-sku",
-        },
-        {
-          title: "Lista de Produtos",
-          url: "/dashboard/api-aliexpress/product-list-url",
-        },
-      ],
-    },
-    {
-      title: "Settings",
       url: "#",
       icon: <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />,
       items: [
         {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Painel geral",
+          url: "/dashboard/report/panel",
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: <HugeiconsIcon icon={CropIcon} strokeWidth={2} />,
+      name: "Agenda",
+      url: "/dashboard/agenda/agenda-panel",
+      icon: <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} />,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
+      name: "CRM",
+      url: "/dashboard/crm",
       icon: <HugeiconsIcon icon={PieChartIcon} strokeWidth={2} />,
     },
     {
-      name: "Travel",
-      url: "#",
+      name: "Configurações",
+      url: "/dashboard/settings/",
       icon: <HugeiconsIcon icon={MapsIcon} strokeWidth={2} />,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+
+  const user = {
+    name: session?.user.name ?? "",
+    email: session?.user.email ?? "",
+    avatar: session?.user.image ?? "",
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarLogo />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
