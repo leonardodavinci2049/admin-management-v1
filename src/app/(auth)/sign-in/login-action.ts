@@ -13,6 +13,7 @@ type LoginState = {
   success: boolean;
   message: string;
   errors?: Record<string, string>;
+  redirectTo?: string;
 } | null;
 
 /**
@@ -22,10 +23,12 @@ export const loginAction = async (
   _prevState: LoginState,
   formData: FormData,
 ): Promise<LoginState> => {
+  const submittedEmail = (formData.get("email") as string) || "";
+
   try {
     // Extrair dados do FormData
     const rawData = {
-      email: formData.get("email") as string,
+      email: submittedEmail,
       password: formData.get("password") as string,
     };
 
@@ -68,6 +71,11 @@ export const loginAction = async (
 
     // Tratar erros específicos do Better-Auth
     if (typeof error === "object" && error !== null) {
+      const errorBody =
+        "body" in error && typeof error.body === "object" && error.body !== null
+          ? (error.body as { code?: string; message?: string })
+          : null;
+
       // Verificar se é um erro de API com status 401 (Unauthorized)
       if (
         "statusCode" in error &&
@@ -80,6 +88,17 @@ export const loginAction = async (
       }
 
       // Verificar por mensagem de erro
+
+      if (
+        errorBody?.code === "EMAIL_NOT_VERIFIED" ||
+        errorBody?.message === "Email not verified"
+      ) {
+        return {
+          success: false,
+          message: errorMessages.emailNotVerified,
+          redirectTo: `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}`,
+        };
+      }
       if ("message" in error) {
         const errorMessage = (error as { message?: string }).message || "";
 
@@ -97,6 +116,14 @@ export const loginAction = async (
           return {
             success: false,
             message: errorMessages.accountDisabled,
+          };
+        }
+
+        if (errorMessage.includes("Email not verified")) {
+          return {
+            success: false,
+            message: errorMessages.emailNotVerified,
+            redirectTo: `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}`,
           };
         }
       }
