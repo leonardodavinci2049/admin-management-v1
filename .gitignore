@@ -45,6 +45,7 @@ next-env.d.ts
 .agents/
 .vscode
 .agent/
+/datanase-schemas
 /scripts
 /upload
 /docs
