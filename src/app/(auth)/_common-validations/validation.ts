@@ -386,6 +386,8 @@ export const errorMessages = {
   invalidCredentials: "Email ou senha incorretos.",
   emailNotVerified:
     "Email ainda não verificado. Confirme seu email para continuar.",
+  accessDenied:
+    "Você não tem permissão para acessar o sistema contacte o administrador",
   accountDisabled: "Conta desabilitada. Entre em contato com o suporte.",
   loginSuccess: "Login realizado com sucesso!",
 

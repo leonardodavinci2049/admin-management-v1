@@ -12,7 +12,7 @@ export async function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   if (session.user.role !== "admin") {
-    redirect("/sign-in");
+    redirect("/sign-in?reason=access-denied");
   }
 
   return <>{children}</>;

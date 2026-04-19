@@ -2,7 +2,6 @@
 
 import Form from "next/form";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -15,11 +14,13 @@ import loginAction from "./login-action";
 const initialState = null;
 
 export function LoginForm({
+  accessDeniedMessage,
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & {
+  accessDeniedMessage?: string;
+}) {
   const [state, formAction] = useActionState(loginAction, initialState);
-  const router = useRouter();
 
   // Gerar ID único para cada instância do componente usando useId (SSR-safe)
   const formId = useId();
@@ -30,12 +31,8 @@ export function LoginForm({
       toast.success(state.message);
     } else if (state?.message && !state?.success) {
       toast.error(state.message);
-
-      if (state.redirectTo) {
-        router.push(state.redirectTo);
-      }
     }
-  }, [router, state]);
+  }, [state]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -45,6 +42,12 @@ export function LoginForm({
           Digite seus dados de acesso abaixo
         </p>
       </div>
+
+      {accessDeniedMessage && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-medium text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/20 dark:text-amber-100">
+          {accessDeniedMessage}
+        </div>
+      )}
 
       <div className="grid gap-6">
         <Form action={formAction} className="grid gap-6">

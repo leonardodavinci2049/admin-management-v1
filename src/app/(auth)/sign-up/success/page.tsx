@@ -29,13 +29,17 @@ async function RegistrationSuccessRouteContent({
     typeof resolvedSearchParams.email === "string"
       ? resolvedSearchParams.email
       : undefined;
+  const reason =
+    resolvedSearchParams.reason === "email-not-verified"
+      ? "email-not-verified"
+      : undefined;
 
   // Se não veio do registro, redirecionar para login
   if (!isFromRegistration) {
     redirect("/sign-in");
   }
 
-  return <RegistrationSuccessContent email={email} />;
+  return <RegistrationSuccessContent email={email} reason={reason} />;
 }
 
 /**

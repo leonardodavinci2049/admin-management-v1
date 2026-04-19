@@ -16,12 +16,14 @@ import resendVerificationAction from "./resend-verification-action";
 
 type RegistrationSuccessContentProps = {
   email?: string;
+  reason?: "email-not-verified";
 };
 
 const initialResendState = null;
 
 export default function RegistrationSuccessContent({
   email,
+  reason,
 }: RegistrationSuccessContentProps) {
   const [resendState, resendFormAction, isResending] = useActionState(
     resendVerificationAction,
@@ -60,6 +62,14 @@ export default function RegistrationSuccessContent({
         </CardHeader>
 
         <CardContent className="space-y-6">
+          {reason === "email-not-verified" && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center dark:border-amber-900/40 dark:bg-amber-950/20">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                Email ainda não verificado. Confirme seu email para continuar.
+              </p>
+            </div>
+          )}
+
           {email && (
             <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center dark:border-green-900/40 dark:bg-green-950/20">
               <p className="text-sm text-green-800 dark:text-green-200">

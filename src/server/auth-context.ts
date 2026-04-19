@@ -27,6 +27,9 @@ export type AuthContext = {
 export async function getAuthContext(): Promise<AuthContext> {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/sign-in");
+  if (session.user.role !== "admin") {
+    redirect("/sign-in?reason=access-denied");
+  }
 
   return {
     session,
