@@ -24,7 +24,7 @@ async function PromoLinkContent() {
 
   return (
     <Tabs defaultValue="whatsapp" className="w-full">
-      <TabsList className="w-full sm:w-auto">
+      <TabsList variant="brand" className="w-full sm:w-auto">
         <TabsTrigger value="whatsapp">
           <WhatsAppIcon className="size-4" />
           WhatsApp

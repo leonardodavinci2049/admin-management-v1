@@ -13,6 +13,30 @@ import type {
 const logger = createLogger("PromoLinkCachedService");
 const clientId = String(envs.CLIENT_ID);
 
+function getPromoLinkCacheTags(typeId?: number, appId?: number): string[] {
+  const tags = [CACHE_TAGS.promoLinks, CACHE_TAGS.promoLinksByClient(clientId)];
+
+  if (appId !== undefined) {
+    tags.push(CACHE_TAGS.promoLinksByApp(clientId, String(appId)));
+  }
+
+  if (typeId !== undefined) {
+    tags.push(CACHE_TAGS.promoLinksByType(clientId, String(typeId)));
+  }
+
+  if (appId !== undefined && typeId !== undefined) {
+    tags.push(
+      CACHE_TAGS.promoLinksByAppAndType(
+        clientId,
+        String(appId),
+        String(typeId),
+      ),
+    );
+  }
+
+  return tags;
+}
+
 export type PromoLinkListItem = {
   id: number;
   linkName1: string | null;
@@ -84,11 +108,7 @@ export async function getAllPromoLinks(
   "use cache";
 
   cacheLife("frequent");
-  cacheTag(
-    CACHE_TAGS.promoLinks,
-    CACHE_TAGS.promoLinksByClient(clientId),
-    CACHE_TAGS.promoLinksByType(clientId, String(typeId)),
-  );
+  cacheTag(...getPromoLinkCacheTags(typeId, options?.appId));
 
   try {
     const response = await promoLinkService.execPromoLinkFindAllQuery({
@@ -120,11 +140,7 @@ export async function getLatestPromoLinkByType(
   "use cache";
 
   cacheLife("frequent");
-  cacheTag(
-    CACHE_TAGS.promoLinks,
-    CACHE_TAGS.promoLinksByClient(clientId),
-    CACHE_TAGS.promoLinksByType(clientId, String(typeId)),
-  );
+  cacheTag(...getPromoLinkCacheTags(typeId, appId));
 
   try {
     const response = await promoLinkService.execPromoLinkFindLatestIdQuery({
@@ -155,7 +171,7 @@ export async function getLatestPromoLinksByType(
   "use cache";
 
   cacheLife("frequent");
-  cacheTag(CACHE_TAGS.promoLinks, CACHE_TAGS.promoLinksByClient(clientId));
+  cacheTag(...getPromoLinkCacheTags(undefined, appId));
 
   try {
     const response = await promoLinkService.execPromoLinkFindLatestTypeQuery({

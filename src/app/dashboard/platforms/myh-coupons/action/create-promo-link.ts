@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { z } from "zod";
 import { envs } from "@/core/config";
 import { createLogger } from "@/core/logger";
@@ -9,6 +9,18 @@ import promoLinkService from "@/services/db/promo-link/promo-link.service";
 import type { ActionState } from "@/types/action-types";
 
 const logger = createLogger("createPromoLinkAction");
+
+function getPromoLinkCacheTags(typeId: number, appId: number): string[] {
+  const clientId = String(envs.CLIENT_ID);
+
+  return [
+    CACHE_TAGS.promoLinks,
+    CACHE_TAGS.promoLinksByClient(clientId),
+    CACHE_TAGS.promoLinksByApp(clientId, String(appId)),
+    CACHE_TAGS.promoLinksByType(clientId, String(typeId)),
+    CACHE_TAGS.promoLinksByAppAndType(clientId, String(appId), String(typeId)),
+  ];
+}
 
 const promoLinkFormSchema = z.object({
   linkName: z
@@ -74,13 +86,12 @@ export async function createPromoLinkAction(
       };
     }
 
-    const clientId = String(envs.CLIENT_ID);
-    revalidateTag(CACHE_TAGS.promoLinks, "seconds");
-    revalidateTag(CACHE_TAGS.promoLinksByClient(clientId), "seconds");
-    revalidateTag(
-      CACHE_TAGS.promoLinksByType(clientId, String(parsed.data.typeId)),
-      "seconds",
-    );
+    for (const cacheTag of getPromoLinkCacheTags(
+      parsed.data.typeId,
+      parsed.data.appId,
+    )) {
+      updateTag(cacheTag);
+    }
 
     return { success: true, message: "Link cadastrado com sucesso!" };
   } catch (error) {
