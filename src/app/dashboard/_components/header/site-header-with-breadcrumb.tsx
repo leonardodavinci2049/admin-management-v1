@@ -43,7 +43,7 @@ export async function SiteHeaderWithBreadcrumb({
   };
 
   return (
-    <header className="flex h-(--header-height) w-full shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header className="flex h-(--header-height) w-full shrink-0 items-center gap-2 border-b border-border/60 bg-background/50 backdrop-blur-xl transition-[width,height] ease-linear supports-[backdrop-filter]:bg-background/35 group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator
