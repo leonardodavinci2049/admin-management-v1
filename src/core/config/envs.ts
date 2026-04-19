@@ -21,6 +21,7 @@ const serverEnvsSchema = z.object({
   PORT: z.coerce.number().positive(),
   EXTERNAL_API_MAIN_URL: z.string().url(),
   APP_ID: z.coerce.number().positive(),
+  CLIENT_ID: z.coerce.number().positive(),
   DATABASE_HOST: z.string().min(1),
   DATABASE_PORT: z.coerce.number().positive(),
   DATABASE_NAME: z.string().min(1),
