@@ -2,7 +2,21 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { LoginForm } from "./LoginForm";
 
-export default function LoginPage() {
+type LoginPageSearchParams = Promise<{
+  [key: string]: string | string[] | undefined;
+}>;
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: LoginPageSearchParams;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const accessDeniedMessage =
+    resolvedSearchParams.reason === "access-denied"
+      ? "Você não tem permissão para acessar o sistema contacte o administrador"
+      : undefined;
+
   return (
     <div className="flex items-center justify-center p-4">
       {/* Card para telas grandes com formulário e imagem */}
@@ -10,7 +24,7 @@ export default function LoginPage() {
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <div className="flex flex-1 items-center justify-center">
             <div className="w-full max-w-sm">
-              <LoginForm />
+              <LoginForm accessDeniedMessage={accessDeniedMessage} />
             </div>
           </div>
         </div>
@@ -28,7 +42,7 @@ export default function LoginPage() {
 
       {/* Formulário simples para telas menores */}
       <div className="w-full max-w-sm lg:hidden">
-        <LoginForm />
+        <LoginForm accessDeniedMessage={accessDeniedMessage} />
       </div>
     </div>
   );

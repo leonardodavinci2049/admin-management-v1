@@ -13,7 +13,6 @@ type LoginState = {
   success: boolean;
   message: string;
   errors?: Record<string, string>;
-  redirectTo?: string;
 } | null;
 
 /**
@@ -54,9 +53,16 @@ export const loginAction = async (
     const { email, password } = validationResult.data;
 
     // Autenticar com Better-Auth
-    await auth.api.signInEmail({
+    const signInResult = await auth.api.signInEmail({
       body: { email, password },
     });
+
+    if (signInResult.user.role !== "admin") {
+      return {
+        success: false,
+        message: errorMessages.accessDenied,
+      };
+    }
 
     // Se chegou até aqui, o login foi bem-sucedido
     // O redirect será tratado pelo middleware ou pela configuração do Better-Auth
@@ -93,11 +99,9 @@ export const loginAction = async (
         errorBody?.code === "EMAIL_NOT_VERIFIED" ||
         errorBody?.message === "Email not verified"
       ) {
-        return {
-          success: false,
-          message: errorMessages.emailNotVerified,
-          redirectTo: `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}`,
-        };
+        redirect(
+          `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}&reason=email-not-verified`,
+        );
       }
       if ("message" in error) {
         const errorMessage = (error as { message?: string }).message || "";
@@ -120,11 +124,9 @@ export const loginAction = async (
         }
 
         if (errorMessage.includes("Email not verified")) {
-          return {
-            success: false,
-            message: errorMessages.emailNotVerified,
-            redirectTo: `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}`,
-          };
+          redirect(
+            `/sign-up/success?success=true&email=${encodeURIComponent(submittedEmail)}&reason=email-not-verified`,
+          );
         }
       }
     }
