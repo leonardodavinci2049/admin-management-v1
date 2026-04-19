@@ -14,16 +14,18 @@ export default function DashboardLayout({
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="brand-shell-surface flex min-h-screen items-center justify-center">
           <Spinner />
         </div>
       }
     >
       <AuthGate>
         <TooltipProvider>
-          <SidebarProvider>
+          <SidebarProvider className="bg-transparent">
             <AppSidebar />
-            <SidebarInset>{children}</SidebarInset>
+            <SidebarInset className="brand-shell-surface">
+              {children}
+            </SidebarInset>
           </SidebarProvider>
         </TooltipProvider>
       </AuthGate>
