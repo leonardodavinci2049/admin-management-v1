@@ -384,6 +384,8 @@ export const errorMessages = {
 
   // Erros de autenticação/login
   invalidCredentials: "Email ou senha incorretos.",
+  emailNotVerified:
+    "Email ainda não verificado. Confirme seu email para continuar.",
   accountDisabled: "Conta desabilitada. Entre em contato com o suporte.",
   loginSuccess: "Login realizado com sucesso!",
 
