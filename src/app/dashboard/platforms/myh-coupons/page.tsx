@@ -36,6 +36,7 @@ async function PromoLinkContent() {
         <PromoLinkTabPanel
           typeId={WHATSAPP_TYPE_ID}
           typeName="WhatsApp"
+          appId={APP_ID}
           links={whatsappLinks}
         />
       </TabsContent>
@@ -44,6 +45,7 @@ async function PromoLinkContent() {
         <PromoLinkTabPanel
           typeId={TELEGRAM_TYPE_ID}
           typeName="Telegram"
+          appId={APP_ID}
           links={telegramLinks}
         />
       </TabsContent>

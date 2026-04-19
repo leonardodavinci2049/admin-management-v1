@@ -15,9 +15,10 @@ import { createPromoLinkAction } from "../action/create-promo-link";
 
 type PromoLinkFormProps = {
   typeId: number;
+  appId: number;
 };
 
-export function PromoLinkForm({ typeId }: PromoLinkFormProps) {
+export function PromoLinkForm({ typeId, appId }: PromoLinkFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -39,6 +40,7 @@ export function PromoLinkForm({ typeId }: PromoLinkFormProps) {
   return (
     <Form ref={formRef} action={formAction} className="space-y-4">
       <input type="hidden" name="typeId" value={typeId} />
+      <input type="hidden" name="appId" value={appId} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">

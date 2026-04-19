@@ -6,12 +6,14 @@ import { PromoLinkTable } from "./promo-link-table";
 type PromoLinkTabPanelProps = {
   typeId: number;
   typeName: string;
+  appId: number;
   links: PromoLinkListItem[];
 };
 
 export function PromoLinkTabPanel({
   typeId,
   typeName,
+  appId,
   links,
 }: PromoLinkTabPanelProps) {
   return (
@@ -20,7 +22,7 @@ export function PromoLinkTabPanel({
         <h3 className="mb-4 text-sm font-medium text-muted-foreground">
           Cadastrar novo link — {typeName}
         </h3>
-        <PromoLinkForm typeId={typeId} />
+        <PromoLinkForm typeId={typeId} appId={appId} />
       </div>
 
       <div>

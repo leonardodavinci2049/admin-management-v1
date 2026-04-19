@@ -26,6 +26,7 @@ const promoLinkFormSchema = z.object({
     .number()
     .int()
     .refine((v) => v === 1 || v === 2, "Tipo inválido."),
+  appId: z.coerce.number().int().positive("App ID inválido."),
 });
 
 export async function createPromoLinkAction(
@@ -36,6 +37,7 @@ export async function createPromoLinkAction(
     linkName: (formData.get("linkName") as string) ?? "",
     linkUrl: (formData.get("linkUrl") as string) ?? "",
     typeId: (formData.get("typeId") as string) ?? "",
+    appId: (formData.get("appId") as string) ?? "",
   };
 
   const parsed = promoLinkFormSchema.safeParse(rawData);
@@ -55,7 +57,7 @@ export async function createPromoLinkAction(
 
   try {
     const result = await promoLinkService.execPromoLinkCreateQuery({
-      PE_APP_ID: 1,
+      PE_APP_ID: parsed.data.appId,
       PE_TYPE_ID: parsed.data.typeId,
       PE_LINK_NAME1: parsed.data.linkName,
       PE_LINK1: parsed.data.linkUrl,

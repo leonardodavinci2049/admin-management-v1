@@ -2,6 +2,7 @@
 
 import Form from "next/form";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [state, formAction] = useActionState(loginAction, initialState);
+  const router = useRouter();
 
   // Gerar ID único para cada instância do componente usando useId (SSR-safe)
   const formId = useId();
@@ -28,8 +30,12 @@ export function LoginForm({
       toast.success(state.message);
     } else if (state?.message && !state?.success) {
       toast.error(state.message);
+
+      if (state.redirectTo) {
+        router.push(state.redirectTo);
+      }
     }
-  }, [state]);
+  }, [router, state]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
