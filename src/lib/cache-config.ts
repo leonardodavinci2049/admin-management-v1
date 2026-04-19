@@ -44,6 +44,10 @@ export const CACHE_TAGS = {
   agendaNotification: (id: string) => `agenda-notification-${id}`,
   agendaNotificationsByUser: (userId: string) =>
     `agenda-notifications-${userId}`,
+  promoLink: (id: string) => `promo-link-${id}`,
+  promoLinksByClient: (clientId: string) => `promo-links-client-${clientId}`,
+  promoLinksByType: (clientId: string, typeId: string) =>
+    `promo-links-client-${clientId}-type-${typeId}`,
 
   // CRM dynamic tags
   crmLead: (id: string) => `crm-lead-${id}`,
@@ -85,6 +89,7 @@ export const CACHE_TAGS = {
   logOperations: "log-operations",
   agendaEntries: "agenda-entries",
   agendaNotifications: "agenda-notifications",
+  promoLinks: "promo-links",
   crmLeads: "crm-leads",
   crmStages: "crm-stages",
   crmPipeline: "crm-pipeline",
