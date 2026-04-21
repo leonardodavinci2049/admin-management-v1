@@ -11,6 +11,7 @@ import {
 } from "../_components/platform-brand-icons";
 import { PromoLinkTabPanel } from "../_components/platform-promo-link-tab-panel";
 import { createPromoLinkAction } from "./action/create-promo-link";
+import { deletePromoLinkAction } from "./action/delete-promo-link";
 
 const LINK_LIMIT = 20;
 const APP_ID = 1;
@@ -43,6 +44,7 @@ async function PromoLinkContent() {
           appId={APP_ID}
           links={whatsappLinks}
           action={createPromoLinkAction}
+          deleteAction={deletePromoLinkAction}
         />
       </TabsContent>
 
@@ -53,6 +55,7 @@ async function PromoLinkContent() {
           appId={APP_ID}
           links={telegramLinks}
           action={createPromoLinkAction}
+          deleteAction={deletePromoLinkAction}
         />
       </TabsContent>
     </Tabs>

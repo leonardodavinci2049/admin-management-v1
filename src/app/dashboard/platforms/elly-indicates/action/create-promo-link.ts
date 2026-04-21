@@ -6,6 +6,7 @@ import { envs } from "@/core/config";
 import { createLogger } from "@/core/logger";
 import { CACHE_TAGS } from "@/lib/cache-config";
 import { triggerRevalidateWebhook } from "@/lib/webhook-revalidate";
+import { getAuthContext } from "@/server/auth-context";
 import promoLinkService from "@/services/db/promo-link/promo-link.service";
 import type { ActionState } from "@/types/action-types";
 
@@ -46,6 +47,12 @@ export async function createPromoLinkAction(
   _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  try {
+    await getAuthContext();
+  } catch {
+    return { success: false, message: "Acesso não autorizado." };
+  }
+
   const rawData = {
     linkName: (formData.get("linkName") as string) ?? "",
     linkUrl: (formData.get("linkUrl") as string) ?? "",

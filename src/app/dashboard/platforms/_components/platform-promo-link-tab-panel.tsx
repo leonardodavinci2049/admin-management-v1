@@ -10,6 +10,7 @@ type PromoLinkTabPanelProps = {
   appId: number;
   links: PromoLinkListItem[];
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  deleteAction: (id: number, typeId: number) => Promise<ActionState>;
 };
 
 export function PromoLinkTabPanel({
@@ -18,6 +19,7 @@ export function PromoLinkTabPanel({
   appId,
   links,
   action,
+  deleteAction,
 }: PromoLinkTabPanelProps) {
   return (
     <div className="space-y-6">
@@ -32,7 +34,12 @@ export function PromoLinkTabPanel({
         <h3 className="mb-3 text-sm font-medium text-muted-foreground">
           Últimos links cadastrados
         </h3>
-        <PromoLinkTable links={links} typeName={typeName} />
+        <PromoLinkTable
+          links={links}
+          typeName={typeName}
+          typeId={typeId}
+          deleteAction={deleteAction}
+        />
       </div>
     </div>
   );
