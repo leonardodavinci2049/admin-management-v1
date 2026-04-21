@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import Form from "next/form";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
@@ -19,7 +19,9 @@ type PromoLinkFormProps = {
 
 export function PromoLinkForm({ typeId, appId, action }: PromoLinkFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
+  const processedSubmissionIdRef = useRef<string | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     action,
     null,
@@ -27,6 +29,29 @@ export function PromoLinkForm({ typeId, appId, action }: PromoLinkFormProps) {
 
   useEffect(() => {
     if (!state) return;
+    const submissionId = state.submissionId;
+
+    if (!submissionId) return;
+
+    if (processedSubmissionIdRef.current === submissionId) {
+      return;
+    }
+
+    const storageKey = `promo-link-form:${pathname}:${appId}:${typeId}`;
+
+    try {
+      const lastProcessedSubmissionId = sessionStorage.getItem(storageKey);
+      if (lastProcessedSubmissionId === submissionId) {
+        processedSubmissionIdRef.current = submissionId;
+        return;
+      }
+      sessionStorage.setItem(storageKey, submissionId);
+    } catch {
+      // Ignore storage failures and fall back to in-memory deduplication.
+    }
+
+    processedSubmissionIdRef.current = submissionId;
+
     if (state.success) {
       toast.success(state.message);
       formRef.current?.reset();
@@ -34,7 +59,7 @@ export function PromoLinkForm({ typeId, appId, action }: PromoLinkFormProps) {
     } else {
       toast.error(state.message);
     }
-  }, [state, router]);
+  }, [appId, pathname, router, state, typeId]);
 
   return (
     <Form ref={formRef} action={formAction} className="space-y-4">
@@ -77,7 +102,7 @@ export function PromoLinkForm({ typeId, appId, action }: PromoLinkFormProps) {
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={isPending} className="min-w-[140px]">
+        <Button type="submit" disabled={isPending} className="min-w-35">
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Cadastrar link
         </Button>
