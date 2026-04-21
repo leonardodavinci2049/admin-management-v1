@@ -1,8 +1,20 @@
 "use client";
 
-import { ArrowRight, ExternalLink, Eye } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, ExternalLink, Eye, Loader2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,10 +33,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { PromoLinkListItem } from "@/services/db/promo-link";
+import type { ActionState } from "@/types/action-types";
 
 type PromoLinkTableProps = {
   links: PromoLinkListItem[];
   typeName: string;
+  typeId: number;
+  deleteAction: (id: number, typeId: number) => Promise<ActionState>;
 };
 
 function formatDate(date: Date | null): string {
@@ -44,10 +59,35 @@ function truncateUrl(url: string | null, maxLength = 35): string {
   return `${url.slice(0, maxLength)}…`;
 }
 
-export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
+export function PromoLinkTable({
+  links,
+  typeName,
+  typeId,
+  deleteAction,
+}: PromoLinkTableProps) {
   const [selectedLink, setSelectedLink] = useState<PromoLinkListItem | null>(
     null,
   );
+  const [linkToDelete, setLinkToDelete] = useState<PromoLinkListItem | null>(
+    null,
+  );
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  function handleConfirmDelete() {
+    if (!linkToDelete) return;
+    const id = linkToDelete.id;
+    setLinkToDelete(null);
+    startTransition(async () => {
+      const result = await deleteAction(id, typeId);
+      if (result?.success) {
+        toast.success(result.message);
+        router.refresh();
+      } else {
+        toast.error(result?.message ?? "Erro ao excluir link.");
+      }
+    });
+  }
 
   if (links.length === 0) {
     return (
@@ -93,11 +133,22 @@ export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
             <button
               type="button"
               onClick={() => setSelectedLink(link)}
-              className="absolute right-3.5 bottom-3.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+              className="absolute right-12 bottom-3.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               title="Ver detalhes"
             >
               <ArrowRight className="h-4 w-4" />
               <span className="sr-only">Ver detalhes</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setLinkToDelete(link)}
+              disabled={isPending}
+              className="absolute right-3.5 bottom-3.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive transition-colors hover:bg-destructive/20 disabled:opacity-50"
+              title="Excluir"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Excluir</span>
             </button>
           </div>
         ))}
@@ -112,7 +163,7 @@ export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
               <TableHead className="max-w-[200px]">Nome</TableHead>
               <TableHead>Link</TableHead>
               <TableHead className="hidden md:table-cell">Criado em</TableHead>
-              <TableHead className="w-16 text-center">Ação</TableHead>
+              <TableHead className="w-24 text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -146,16 +197,33 @@ export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
                   {formatDate(link.createdAt)}
                 </TableCell>
                 <TableCell className="text-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => setSelectedLink(link)}
-                    title="Ver detalhes"
-                  >
-                    <Eye className="h-4 w-4" />
-                    <span className="sr-only">Ver detalhes</span>
-                  </Button>
+                  <div className="inline-flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setSelectedLink(link)}
+                      title="Ver detalhes"
+                    >
+                      <Eye className="h-4 w-4" />
+                      <span className="sr-only">Ver detalhes</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      onClick={() => setLinkToDelete(link)}
+                      disabled={isPending}
+                      title="Excluir"
+                    >
+                      {isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                      <span className="sr-only">Excluir</span>
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -185,8 +253,9 @@ export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
 
                 <div className="space-y-1">
                   <span className="font-medium text-muted-foreground">
-                    Link
+                    Link:
                   </span>
+                  <br />
                   {selectedLink.link1 ? (
                     <a
                       href={selectedLink.link1}
@@ -210,17 +279,41 @@ export function PromoLinkTable({ links, typeName }: PromoLinkTableProps) {
                   <Badge variant="outline">
                     Criado em: {formatDate(selectedLink.createdAt)}
                   </Badge>
-                  {selectedLink.updatedAt && (
-                    <Badge variant="outline">
-                      Atualizado em: {formatDate(selectedLink.updatedAt)}
-                    </Badge>
-                  )}
                 </div>
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={linkToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setLinkToDelete(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir link</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o link{" "}
+              <strong>
+                {linkToDelete?.linkName1 || `#${linkToDelete?.id}`}
+              </strong>
+              ? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

@@ -6,6 +6,7 @@ import { processProcedureResultMutation } from "@/database/utils/process-procedu
 import { processProcedureResultQueryWithoutId } from "@/database/utils/process-procedure-result.query";
 import { ResultModel } from "@/database/utils/result.model";
 import { validatePromoLinkCreateDto } from "./dto/promo_link_create.dto";
+import { validatePromoLinkDeleteDto } from "./dto/promo_link_delete.dto";
 import { validatePromoLinkFindAllDto } from "./dto/promo_link_find_all.dto";
 import { validatePromoLinkFindLatestIdDto } from "./dto/promo_link_find_latest_id.dto";
 import { validatePromoLinkFindLatestTypeDto } from "./dto/promo_link_find_latest_type.dto";
@@ -102,6 +103,33 @@ export class PromoLinkService {
       return processProcedureResultQueryWithoutId<TblPromoLinkLatestTypeRecord>(
         resultData as unknown[],
         "Promo links by latest type not found",
+      );
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : MESSAGES.UNKNOWN_ERROR;
+
+      return new ResultModel(100404, errorMessage, "", []);
+    }
+  }
+
+  async execPromoLinkDeleteQuery(dataJsonDto: unknown): Promise<ResultModel> {
+    try {
+      const validatedDto = validatePromoLinkDeleteDto(dataJsonDto);
+
+      const result = await dbService.modifyExecute(
+        "DELETE FROM tbl_promo_link WHERE ID = ? AND CLIENT_ID = ?",
+        [validatedDto.PE_ID, validatedDto.PE_CLIENT_ID],
+      );
+
+      if (result.affectedRows === 0) {
+        return new ResultModel(100404, "Registro não encontrado.", "", []);
+      }
+
+      return new ResultModel(
+        100200,
+        "Link excluído com sucesso.",
+        String(validatedDto.PE_ID),
+        [],
       );
     } catch (err) {
       const errorMessage =
