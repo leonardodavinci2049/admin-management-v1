@@ -11,18 +11,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ActionState } from "@/types/action-types";
 
-import { createPromoLinkAction } from "../action/create-promo-link";
-
 type PromoLinkFormProps = {
   typeId: number;
   appId: number;
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
 };
 
-export function PromoLinkForm({ typeId, appId }: PromoLinkFormProps) {
+export function PromoLinkForm({ typeId, appId, action }: PromoLinkFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
-    createPromoLinkAction,
+    action,
     null,
   );
 

@@ -5,8 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAllPromoLinks } from "@/services/db/promo-link";
 
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
-import { TelegramIcon, WhatsAppIcon } from "./_components/brand-icons";
-import { PromoLinkTabPanel } from "./_components/promo-link-tab-panel";
+import {
+  TelegramIcon,
+  WhatsAppIcon,
+} from "../_components/platform-brand-icons";
+import { PromoLinkTabPanel } from "../_components/platform-promo-link-tab-panel";
+import { createPromoLinkAction } from "./action/create-promo-link";
 
 const LINK_LIMIT = 20;
 const APP_ID = 1;
@@ -38,6 +42,7 @@ async function PromoLinkContent() {
           typeName="WhatsApp"
           appId={APP_ID}
           links={whatsappLinks}
+          action={createPromoLinkAction}
         />
       </TabsContent>
 
@@ -47,6 +52,7 @@ async function PromoLinkContent() {
           typeName="Telegram"
           appId={APP_ID}
           links={telegramLinks}
+          action={createPromoLinkAction}
         />
       </TabsContent>
     </Tabs>

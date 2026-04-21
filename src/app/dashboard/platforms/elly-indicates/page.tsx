@@ -8,8 +8,9 @@ import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-w
 import {
   TelegramIcon,
   WhatsAppIcon,
-} from "../myh-coupons/_components/brand-icons";
-import { PromoLinkTabPanel } from "../myh-coupons/_components/promo-link-tab-panel";
+} from "../_components/platform-brand-icons";
+import { PromoLinkTabPanel } from "../_components/platform-promo-link-tab-panel";
+import { createPromoLinkAction } from "./action/create-promo-link";
 
 const LINK_LIMIT = 20;
 const APP_ID = 2;
@@ -41,6 +42,7 @@ async function PromoLinkContent() {
           typeName="WhatsApp"
           appId={APP_ID}
           links={whatsappLinks}
+          action={createPromoLinkAction}
         />
       </TabsContent>
 
@@ -50,6 +52,7 @@ async function PromoLinkContent() {
           typeName="Telegram"
           appId={APP_ID}
           links={telegramLinks}
+          action={createPromoLinkAction}
         />
       </TabsContent>
     </Tabs>
