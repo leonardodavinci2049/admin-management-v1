@@ -12,6 +12,10 @@ import type { ActionState } from "@/types/action-types";
 
 const logger = createLogger("createPromoLinkAction");
 
+function createSubmissionId() {
+  return crypto.randomUUID();
+}
+
 function getPromoLinkCacheTags(typeId: number, appId: number): string[] {
   const clientId = String(envs.CLIENT_ID);
 
@@ -50,7 +54,11 @@ export async function createPromoLinkAction(
   try {
     await getAuthContext();
   } catch {
-    return { success: false, message: "Acesso não autorizado." };
+    return {
+      success: false,
+      message: "Acesso não autorizado.",
+      submissionId: createSubmissionId(),
+    };
   }
 
   const rawData = {
@@ -70,6 +78,7 @@ export async function createPromoLinkAction(
     return {
       success: false,
       message: "Verifique os campos do formulário.",
+      submissionId: createSubmissionId(),
       errors,
       fieldValues: rawData,
     };
@@ -90,6 +99,7 @@ export async function createPromoLinkAction(
       return {
         success: false,
         message: result.message || "Erro ao cadastrar link.",
+        submissionId: createSubmissionId(),
         fieldValues: rawData,
       };
     }
@@ -103,12 +113,17 @@ export async function createPromoLinkAction(
 
     await triggerRevalidateWebhook(parsed.data.appId);
 
-    return { success: true, message: "Link cadastrado com sucesso!" };
+    return {
+      success: true,
+      message: "Link cadastrado com sucesso!",
+      submissionId: createSubmissionId(),
+    };
   } catch (error) {
     logger.error("Failed to create promo link", { error });
     return {
       success: false,
       message: "Erro inesperado ao cadastrar link.",
+      submissionId: createSubmissionId(),
       fieldValues: rawData,
     };
   }

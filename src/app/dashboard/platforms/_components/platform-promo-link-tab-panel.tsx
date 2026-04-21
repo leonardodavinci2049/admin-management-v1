@@ -21,13 +21,20 @@ export function PromoLinkTabPanel({
   action,
   deleteAction,
 }: PromoLinkTabPanelProps) {
+  const formInstanceKey = `${appId}-${typeId}`;
+
   return (
     <div className="space-y-6">
       <div className="rounded-lg border bg-card p-4 sm:p-6">
         <h3 className="mb-4 text-sm font-medium text-muted-foreground">
           Cadastrar novo link — {typeName}
         </h3>
-        <PromoLinkForm typeId={typeId} appId={appId} action={action} />
+        <PromoLinkForm
+          key={formInstanceKey}
+          typeId={typeId}
+          appId={appId}
+          action={action}
+        />
       </div>
 
       <div>
