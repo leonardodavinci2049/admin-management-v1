@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Copy, Link2, RefreshCcw, Sparkles, TriangleAlert } from "lucide-react";
+import Image from "next/image";
 import { useId, useState } from "react";
 import { toast } from "sonner";
 
