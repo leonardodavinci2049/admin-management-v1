@@ -14,6 +14,6 @@ const AmazonOfferGenerationPage = () => {
       <DevelopmentPage />
     </>
   );
-}
+};
 
-export default AmazonOfferGenerationPage
+export default AmazonOfferGenerationPage;

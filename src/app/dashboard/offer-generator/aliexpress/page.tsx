@@ -14,6 +14,6 @@ const AliexpressOfferGenerationPage = () => {
       <DevelopmentPage />
     </>
   );
-}
+};
 
-export default AliexpressOfferGenerationPage
+export default AliexpressOfferGenerationPage;

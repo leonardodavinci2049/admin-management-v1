@@ -1,5 +1,5 @@
-import { ShopeeOfferGenerator } from "./_components/shopee-offer-generator";
 import { SiteHeaderWithBreadcrumb } from "../../_components/header/site-header-with-breadcrumb";
+import { ShopeeOfferGenerator } from "./_components/shopee-offer-generator";
 
 const ShopeeOfferGenerationPage = () => {
   return (

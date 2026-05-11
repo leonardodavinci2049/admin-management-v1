@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
 import { Copy, Link2, RefreshCcw, Sparkles, TriangleAlert } from "lucide-react";
+import { useId, useState } from "react";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

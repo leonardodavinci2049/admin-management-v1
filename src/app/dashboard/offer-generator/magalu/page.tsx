@@ -14,6 +14,6 @@ const MagaluOfferGenerationPage = () => {
       <DevelopmentPage />
     </>
   );
-}
+};
 
-export default MagaluOfferGenerationPage
+export default MagaluOfferGenerationPage;

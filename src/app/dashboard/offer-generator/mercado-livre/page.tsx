@@ -14,6 +14,6 @@ const MercadoLibreOfferGenerationPage = () => {
       <DevelopmentPage />
     </>
   );
-}
+};
 
-export default MercadoLibreOfferGenerationPage
+export default MercadoLibreOfferGenerationPage;
