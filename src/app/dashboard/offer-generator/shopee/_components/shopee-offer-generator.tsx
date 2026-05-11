@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Copy, Link2, RefreshCcw, Sparkles, TriangleAlert } from "lucide-react";
 import { useId, useState } from "react";
 import { toast } from "sonner";
@@ -21,6 +22,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 const SHOPEE_AFFILIATE_ID = "poc-shopee-id";
+const SHOPEE_PRODUCT_PLACEHOLDER_IMAGE = "/images/product/no-image.jpeg";
 
 const OFFER_MODELS = {
   withoutCoupon: "withoutCoupon",
@@ -388,6 +390,8 @@ export function ShopeeOfferGenerator() {
   const hasErrors = Object.keys(validationErrors).length > 0;
   const productLinkPreview = applyMockShopeeAffiliateId(formValues.productLink);
   const couponLinkPreview = applyMockShopeeAffiliateId(formValues.couponLink);
+  const shouldShowProductImagePreview =
+    activeModel === OFFER_MODELS.withoutCoupon;
 
   function handleModelChange(nextModel: string) {
     const typedModel = nextModel as OfferModel;
@@ -648,6 +652,35 @@ export function ShopeeOfferGenerator() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              {shouldShowProductImagePreview ? (
+                <div className="overflow-hidden rounded-3xl border border-border/70 bg-background/80">
+                  <div className="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        Imagem do produto na publicação
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Placeholder visual para demonstrar onde a imagem da API
+                        da Shopee será exibida.
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="rounded-full px-3 py-1">
+                      POC visual
+                    </Badge>
+                  </div>
+
+                  <div className="relative aspect-square w-full bg-muted/30">
+                    <Image
+                      src={SHOPEE_PRODUCT_PLACEHOLDER_IMAGE}
+                      alt={`Imagem simbólica de ${formValues.productName}`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 420px"
+                    />
+                  </div>
+                </div>
+              ) : null}
+
               <div className="rounded-3xl border border-border/70 bg-background/70 p-4 shadow-inner">
                 {generatedPreview ? (
                   <pre className="font-sans text-sm leading-6 whitespace-pre-wrap text-foreground">
