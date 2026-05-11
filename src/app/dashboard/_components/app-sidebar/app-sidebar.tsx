@@ -51,6 +51,36 @@ const data = {
         },
       ],
     },
+
+    {
+      title: "Offer Generator",
+      url: "#",
+      icon: <HugeiconsIcon icon={ComputerTerminalIcon} strokeWidth={2} />,
+      isActive: true,
+      items: [
+        {
+          title: "Shopee",
+          url: "/dashboard/offer-generator/shopee",
+        },
+        {
+          title: "AliExpress",
+          url: "/dashboard/offer-generator/aliexpress",
+        },
+        {
+          title: "Amazon",
+          url: "/dashboard/offer-generator/amazon",
+        },
+        {
+          title: "Magalu",
+          url: "/dashboard/offer-generator/magalu",
+        },
+        {
+          title: "Mercado Livre",
+          url: "/dashboard/offer-generator/mercado-livre",
+        },
+      ],
+    },
+
     {
       title: "Bots Telegram",
       url: "#",
