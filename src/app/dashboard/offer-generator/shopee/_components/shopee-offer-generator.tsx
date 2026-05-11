@@ -64,7 +64,8 @@ const MODEL_CONTENT: Record<
   withoutCoupon: {
     label: "Sem cupom",
     shortLabel: "Sem cupom",
-    description: "Publicação simples com preço e link final já preparado para divulgação.",
+    description:
+      "Publicação simples com preço e link final já preparado para divulgação.",
     previewHint: "Modelo ideal para ofertas diretas, sem resgate adicional.",
     mocks: {
       emoji: "🧺",
@@ -113,14 +114,17 @@ const MODEL_CONTENT: Record<
   couponCode: {
     label: "Cupom digitável",
     shortLabel: "Cupom digitável",
-    description: "Oferta com cupom para copiar e colar, destacando o código de resgate.",
-    previewHint: "Ideal quando o cupom precisa ser digitado manualmente pelo cliente.",
+    description:
+      "Oferta com cupom para copiar e colar, destacando o código de resgate.",
+    previewHint:
+      "Ideal quando o cupom precisa ser digitado manualmente pelo cliente.",
     mocks: {
       emoji: "🍳",
       productName: "Air fryer compacta 4L antiaderente",
       price: "R$ 189,90",
       priceDetails: "com frete grátis",
-      productLink: "https://shopee.com.br/product/445566/9988776655?from=flash-sale",
+      productLink:
+        "https://shopee.com.br/product/445566/9988776655?from=flash-sale",
       couponCode: "COZINHA20",
       discountLabel: "R$ 20 OFF",
       couponLink: "https://shopee.com.br/m/cupom-cozinha20",
@@ -173,15 +177,18 @@ const MODEL_CONTENT: Record<
         label: "Link para copiar e colar o cupom",
         placeholder: "Cole o link do cupom",
         required: true,
-        helper: "Use um link fictício da Shopee para simular a jornada completa.",
+        helper:
+          "Use um link fictício da Shopee para simular a jornada completa.",
       },
     ],
   },
   couponInApp: {
     label: "Cupom no app",
     shortLabel: "Cupom no app",
-    description: "Oferta com cupom resgatado dentro do app da Shopee antes da compra.",
-    previewHint: "Bom para fluxos em que o cliente precisa resgatar o desconto no app.",
+    description:
+      "Oferta com cupom resgatado dentro do app da Shopee antes da compra.",
+    previewHint:
+      "Bom para fluxos em que o cliente precisa resgatar o desconto no app.",
     mocks: {
       emoji: "🎧",
       productName: "Fone bluetooth gamer com baixa latência",
@@ -240,7 +247,10 @@ const MODEL_CONTENT: Record<
   },
 };
 
-const REQUIRED_FIELDS: Record<OfferModel, Array<keyof ShopeeOfferFormValues>> = {
+const REQUIRED_FIELDS: Record<
+  OfferModel,
+  Array<keyof ShopeeOfferFormValues>
+> = {
   withoutCoupon: ["emoji", "productName", "price", "productLink"],
   couponCode: [
     "emoji",
@@ -296,24 +306,41 @@ function validateShopeeOfferFields(
   model: OfferModel,
   values: ShopeeOfferFormValues,
 ) {
-  return REQUIRED_FIELDS[model].reduce<Record<string, string>>((errors, field) => {
-    if (!values[field].trim()) {
-      const label = MODEL_CONTENT[model].fields.find((item) => item.name === field)?.label;
-      errors[field] = `${label ?? "Campo"} é obrigatório.`;
-    }
+  return REQUIRED_FIELDS[model].reduce<Record<string, string>>(
+    (errors, field) => {
+      if (!values[field].trim()) {
+        const label = MODEL_CONTENT[model].fields.find(
+          (item) => item.name === field,
+        )?.label;
+        errors[field] = `${label ?? "Campo"} é obrigatório.`;
+      }
 
-    return errors;
-  }, {});
+      return errors;
+    },
+    {},
+  );
 }
 
-function buildShopeeOfferText(model: OfferModel, values: ShopeeOfferFormValues) {
-  const productLinkWithAffiliateId = applyMockShopeeAffiliateId(values.productLink);
-  const couponLinkWithAffiliateId = applyMockShopeeAffiliateId(values.couponLink);
+function buildShopeeOfferText(
+  model: OfferModel,
+  values: ShopeeOfferFormValues,
+) {
+  const productLinkWithAffiliateId = applyMockShopeeAffiliateId(
+    values.productLink,
+  );
+  const couponLinkWithAffiliateId = applyMockShopeeAffiliateId(
+    values.couponLink,
+  );
   const header = `${values.emoji.trim()} ${values.productName.trim()}`.trim();
   const priceLine = formatPriceLine(values.price, values.priceDetails);
 
   if (model === OFFER_MODELS.withoutCoupon) {
-    return [header, "", priceLine, `🛒 COMPRE AQUI: ${productLinkWithAffiliateId}`].join("\n");
+    return [
+      header,
+      "",
+      priceLine,
+      `🛒 COMPRE AQUI: ${productLinkWithAffiliateId}`,
+    ].join("\n");
   }
 
   if (model === OFFER_MODELS.couponCode) {
@@ -342,7 +369,9 @@ function buildShopeeOfferText(model: OfferModel, values: ShopeeOfferFormValues) 
 
 export function ShopeeOfferGenerator() {
   const previewId = useId();
-  const [activeModel, setActiveModel] = useState<OfferModel>(OFFER_MODELS.withoutCoupon);
+  const [activeModel, setActiveModel] = useState<OfferModel>(
+    OFFER_MODELS.withoutCoupon,
+  );
   const [formValues, setFormValues] = useState<ShopeeOfferFormValues>(
     getModelMocks(OFFER_MODELS.withoutCoupon),
   );
@@ -447,7 +476,8 @@ export function ShopeeOfferGenerator() {
               Gerador de ofertas Shopee para validação com o cliente
             </h1>
             <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
-              Escolha um modelo de publicação, ajuste os dados fictícios e gere uma oferta pronta para copiar.
+              Escolha um modelo de publicação, ajuste os dados fictícios e gere
+              uma oferta pronta para copiar.
             </p>
           </div>
 
@@ -480,7 +510,10 @@ export function ShopeeOfferGenerator() {
             </CardHeader>
             <CardContent>
               <Tabs value={activeModel} onValueChange={handleModelChange}>
-                <TabsList variant="brand" className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
+                <TabsList
+                  variant="brand"
+                  className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3"
+                >
                   <TabsTrigger value={OFFER_MODELS.withoutCoupon}>
                     Sem cupom
                   </TabsTrigger>
@@ -494,7 +527,9 @@ export function ShopeeOfferGenerator() {
               </Tabs>
 
               <div className="mt-4 rounded-3xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">{modelConfig.description}</p>
+                <p className="font-medium text-foreground">
+                  {modelConfig.description}
+                </p>
                 <p className="mt-1">{modelConfig.previewHint}</p>
               </div>
             </CardContent>
@@ -504,16 +539,20 @@ export function ShopeeOfferGenerator() {
             <CardHeader>
               <CardTitle>Dados da oferta</CardTitle>
               <CardDescription>
-                Preencha os campos obrigatórios e ajuste os dados fictícios conforme o cenário.
+                Preencha os campos obrigatórios e ajuste os dados fictícios
+                conforme o cenário.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
               {hasAttemptedSubmit && hasErrors ? (
                 <Alert className="border-amber-500/35 bg-amber-500/8 text-amber-950 dark:text-amber-100">
                   <TriangleAlert className="text-amber-600 dark:text-amber-300" />
-                  <AlertTitle>Há campos pendentes para concluir a oferta.</AlertTitle>
+                  <AlertTitle>
+                    Há campos pendentes para concluir a oferta.
+                  </AlertTitle>
                   <AlertDescription className="text-amber-900/85 dark:text-amber-100/85">
-                    Revise os campos marcados abaixo antes de gerar ou copiar a prévia.
+                    Revise os campos marcados abaixo antes de gerar ou copiar a
+                    prévia.
                   </AlertDescription>
                 </Alert>
               ) : null}
@@ -531,7 +570,10 @@ export function ShopeeOfferGenerator() {
                   return (
                     <div
                       key={field.name}
-                      className={cn("space-y-2", isWideField && "sm:col-span-2")}
+                      className={cn(
+                        "space-y-2",
+                        isWideField && "sm:col-span-2",
+                      )}
                     >
                       <Label htmlFor={field.name}>
                         {field.label}
@@ -554,9 +596,13 @@ export function ShopeeOfferGenerator() {
                         aria-invalid={Boolean(errorMessage)}
                       />
                       {errorMessage ? (
-                        <p className="text-sm text-destructive">{errorMessage}</p>
+                        <p className="text-sm text-destructive">
+                          {errorMessage}
+                        </p>
                       ) : field.helper ? (
-                        <p className="text-sm text-muted-foreground">{field.helper}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {field.helper}
+                        </p>
                       ) : null}
                     </div>
                   );
@@ -568,7 +614,12 @@ export function ShopeeOfferGenerator() {
                   <Sparkles />
                   Gerar prévia
                 </Button>
-                <Button type="button" size="lg" variant="ghost" onClick={handleResetExample}>
+                <Button
+                  type="button"
+                  size="lg"
+                  variant="ghost"
+                  onClick={handleResetExample}
+                >
                   <RefreshCcw />
                   Restaurar exemplo
                 </Button>
@@ -587,7 +638,8 @@ export function ShopeeOfferGenerator() {
                 <div>
                   <CardTitle>Prévia da oferta</CardTitle>
                   <CardDescription>
-                    O texto copiado será exatamente igual ao conteúdo exibido abaixo.
+                    O texto copiado será exatamente igual ao conteúdo exibido
+                    abaixo.
                   </CardDescription>
                 </div>
                 <Badge variant="outline" className="rounded-full px-3 py-1">
@@ -616,11 +668,17 @@ export function ShopeeOfferGenerator() {
                   </div>
                   <div className="space-y-2 text-muted-foreground">
                     <p>
-                      Produto: <span className="break-all text-foreground">{productLinkPreview || "Informe um link do produto."}</span>
+                      Produto:{" "}
+                      <span className="break-all text-foreground">
+                        {productLinkPreview || "Informe um link do produto."}
+                      </span>
                     </p>
                     {activeModel !== OFFER_MODELS.withoutCoupon ? (
                       <p>
-                        Cupom: <span className="break-all text-foreground">{couponLinkPreview || "Informe um link de cupom."}</span>
+                        Cupom:{" "}
+                        <span className="break-all text-foreground">
+                          {couponLinkPreview || "Informe um link de cupom."}
+                        </span>
                       </p>
                     ) : null}
                   </div>
@@ -631,7 +689,8 @@ export function ShopeeOfferGenerator() {
                     <Link2 />
                     <AlertTitle>Link curto detectado</AlertTitle>
                     <AlertDescription>
-                      A POC mantém o link visualmente parecido e adiciona o ID fictício apenas para demonstrar a regra futura.
+                      A POC mantém o link visualmente parecido e adiciona o ID
+                      fictício apenas para demonstrar a regra futura.
                     </AlertDescription>
                   </Alert>
                 ) : null}

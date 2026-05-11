@@ -8,7 +8,10 @@ const ShopeeOfferGenerationPage = () => {
         title="Gerador de Ofertas"
         breadcrumbItems={[
           { label: "Dashboard", href: "/dashboard" },
-          { label: "Gerador de Ofertas", href: "/dashboard/offer-generator/shopee" },
+          {
+            label: "Gerador de Ofertas",
+            href: "/dashboard/offer-generator/shopee",
+          },
           { label: "Shopee", isActive: true },
         ]}
       />
