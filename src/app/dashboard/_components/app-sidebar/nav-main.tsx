@@ -41,6 +41,7 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
+      icon?: React.ReactNode;
     }[];
   }[];
 }) {
@@ -119,6 +120,7 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild isActive={isActive}>
                             <Link href={subItem.url} onClick={handleNavigation}>
+                              {subItem.icon}
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>
