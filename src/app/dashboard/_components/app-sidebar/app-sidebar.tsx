@@ -3,11 +3,16 @@
 import {
   AudioWave01Icon,
   ComputerTerminalIcon,
+  Coupon01Icon,
+  DeliveryTruck01Icon,
   LayoutBottomIcon,
   MapsIcon,
   PieChartIcon,
   RoboticIcon,
   Settings05Icon,
+  ShoppingBag02Icon,
+  ShoppingBag03Icon,
+  ShoppingBasket01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import type * as React from "react";
@@ -61,22 +66,29 @@ const data = {
         {
           title: "Shopee",
           url: "/dashboard/offer-generator/shopee",
+          icon: <HugeiconsIcon icon={ShoppingBag02Icon} strokeWidth={2} />,
         },
-        {
-          title: "AliExpress",
-          url: "/dashboard/offer-generator/aliexpress",
-        },
+
         {
           title: "Amazon",
           url: "/dashboard/offer-generator/amazon",
-        },
-        {
-          title: "Magalu",
-          url: "/dashboard/offer-generator/magalu",
+          icon: <HugeiconsIcon icon={ShoppingBasket01Icon} strokeWidth={2} />,
         },
         {
           title: "Mercado Livre",
           url: "/dashboard/offer-generator/mercado-livre",
+          icon: <HugeiconsIcon icon={DeliveryTruck01Icon} strokeWidth={2} />,
+        },
+        {
+          title: "Magalu",
+          url: "/dashboard/offer-generator/magalu",
+          icon: <HugeiconsIcon icon={Coupon01Icon} strokeWidth={2} />,
+        },
+
+        {
+          title: "AliExpress",
+          url: "/dashboard/offer-generator/aliexpress",
+          icon: <HugeiconsIcon icon={ShoppingBag03Icon} strokeWidth={2} />,
         },
       ],
     },
