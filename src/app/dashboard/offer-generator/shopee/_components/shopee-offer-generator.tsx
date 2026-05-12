@@ -460,8 +460,8 @@ export function ShopeeOfferGenerator() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-350 flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
-      <section className="relative overflow-hidden rounded-4xl border border-border/60 bg-linear-to-br from-card via-card to-orange-500/8 p-5 shadow-sm sm:p-6 lg:p-8">
+    <main className="mx-auto flex w-full max-w-350 min-w-0 flex-1 flex-col gap-4 p-3 sm:gap-6 sm:p-4 md:p-6 lg:p-8">
+      <section className="relative min-w-0 overflow-hidden rounded-3xl border border-border/60 bg-linear-to-br from-card via-card to-orange-500/8 p-4 shadow-sm sm:rounded-4xl sm:p-6 lg:p-8">
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-48 bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.16),transparent_65%)] lg:block" />
 
         <div className="relative flex flex-col gap-5">
@@ -486,51 +486,69 @@ export function ShopeeOfferGenerator() {
           </div>
 
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-            <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">
+            <span className="max-w-full rounded-full border border-border/70 bg-background/70 px-3 py-1 wrap-break-word">
               Regra de afiliado simulada com ID temporário
             </span>
-            <span className="rounded-full border border-border/70 bg-background/70 px-3 py-1">
+            <span className="max-w-full rounded-full border border-border/70 bg-background/70 px-3 py-1 wrap-break-word">
               Textos finais sem CTA extra
             </span>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] xl:items-start">
-        <div className="space-y-6">
-          <Card className="border border-border/60 bg-card/95 shadow-sm">
-            <CardHeader className="gap-3">
+      <section className="grid min-w-0 gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] xl:items-start">
+        <div className="min-w-0 space-y-4 sm:space-y-6">
+          <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
+            <CardHeader className="gap-3 px-4 sm:px-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                   <CardTitle>Modelo da oferta</CardTitle>
                   <CardDescription>
                     Troque entre os três formatos aprovados para a POC.
                   </CardDescription>
                 </div>
-                <Badge variant="outline" className="rounded-full px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="w-fit rounded-full px-3 py-1"
+                >
                   {modelConfig.shortLabel}
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent>
-              <Tabs value={activeModel} onValueChange={handleModelChange}>
-                <TabsList
-                  variant="brand"
-                  className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3"
-                >
-                  <TabsTrigger value={OFFER_MODELS.withoutCoupon}>
-                    Sem cupom
-                  </TabsTrigger>
-                  <TabsTrigger value={OFFER_MODELS.couponCode}>
-                    Cupom digitável
-                  </TabsTrigger>
-                  <TabsTrigger value={OFFER_MODELS.couponInApp}>
-                    Cupom no app
-                  </TabsTrigger>
-                </TabsList>
+            <CardContent className="px-4 sm:px-6">
+              <Tabs
+                value={activeModel}
+                onValueChange={handleModelChange}
+                className="w-full min-w-0"
+              >
+                <div className="min-w-0 sm:px-0">
+                  <TabsList
+                    variant="brand"
+                    className="flex! h-auto! w-full! max-w-full! min-w-0 flex-col! items-stretch! justify-start! gap-2.5 rounded-3xl p-2 sm:grid! sm:grid-cols-3! sm:items-center! sm:justify-center! sm:rounded-full sm:p-1"
+                  >
+                    <TabsTrigger
+                      value={OFFER_MODELS.withoutCoupon}
+                      className="h-auto min-h-12 w-full min-w-0 rounded-2xl px-3 py-3 text-center leading-snug whitespace-normal sm:min-h-11 sm:px-3 sm:py-2"
+                    >
+                      Sem cupom
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value={OFFER_MODELS.couponCode}
+                      className="h-auto min-h-12 w-full min-w-0 rounded-2xl px-3 py-3 text-center leading-snug whitespace-normal sm:min-h-11 sm:px-3 sm:py-2"
+                    >
+                      Cupom digitável
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value={OFFER_MODELS.couponInApp}
+                      className="h-auto min-h-12 w-full min-w-0 rounded-2xl px-3 py-3 text-center leading-snug whitespace-normal sm:min-h-11 sm:px-3 sm:py-2"
+                    >
+                      Cupom no app
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
               </Tabs>
 
-              <div className="mt-4 rounded-3xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
+              <div className="mt-4 rounded-2xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground sm:rounded-3xl">
                 <p className="font-medium text-foreground">
                   {modelConfig.description}
                 </p>
@@ -539,15 +557,15 @@ export function ShopeeOfferGenerator() {
             </CardContent>
           </Card>
 
-          <Card className="border border-border/60 bg-card/95 shadow-sm">
-            <CardHeader>
+          <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
+            <CardHeader className="px-4 sm:px-6">
               <CardTitle>Dados da oferta</CardTitle>
               <CardDescription>
                 Preencha os campos obrigatórios e ajuste os dados fictícios
                 conforme o cenário.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-5 px-4 sm:px-6">
               {hasAttemptedSubmit && hasErrors ? (
                 <Alert className="border-amber-500/35 bg-amber-500/8 text-amber-950 dark:text-amber-100">
                   <TriangleAlert className="text-amber-600 dark:text-amber-300" />
@@ -579,7 +597,7 @@ export function ShopeeOfferGenerator() {
                         isWideField && "sm:col-span-2",
                       )}
                     >
-                      <Label htmlFor={field.name}>
+                      <Label htmlFor={field.name} className="min-w-0 flex-wrap">
                         {field.label}
                         {field.required ? (
                           <span className="text-destructive">*</span>
@@ -592,6 +610,7 @@ export function ShopeeOfferGenerator() {
                       </Label>
                       <Input
                         id={field.name}
+                        className="min-w-0"
                         value={formValues[field.name]}
                         onChange={(event) =>
                           handleValueChange(field.name, event.target.value)
@@ -604,7 +623,7 @@ export function ShopeeOfferGenerator() {
                           {errorMessage}
                         </p>
                       ) : field.helper ? (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground wrap-break-word">
                           {field.helper}
                         </p>
                       ) : null}
@@ -614,7 +633,12 @@ export function ShopeeOfferGenerator() {
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button type="button" size="lg" onClick={handleGeneratePreview}>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="w-full sm:w-auto"
+                  onClick={handleGeneratePreview}
+                >
                   <Sparkles />
                   Gerar prévia
                 </Button>
@@ -622,6 +646,7 @@ export function ShopeeOfferGenerator() {
                   type="button"
                   size="lg"
                   variant="ghost"
+                  className="w-full sm:w-auto"
                   onClick={handleResetExample}
                 >
                   <RefreshCcw />
@@ -632,30 +657,33 @@ export function ShopeeOfferGenerator() {
           </Card>
         </div>
 
-        <div className="xl:sticky xl:top-6">
+        <div className="min-w-0 xl:sticky xl:top-6">
           <Card
             id={previewId}
-            className="border border-border/60 bg-linear-to-br from-card via-card to-muted/30 shadow-sm"
+            className="min-w-0 border border-border/60 bg-linear-to-br from-card via-card to-muted/30 shadow-sm"
           >
-            <CardHeader className="gap-3">
+            <CardHeader className="gap-3 px-4 sm:px-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
+                <div className="min-w-0">
                   <CardTitle>Prévia da oferta</CardTitle>
                   <CardDescription>
                     O texto copiado será exatamente igual ao conteúdo exibido
                     abaixo.
                   </CardDescription>
                 </div>
-                <Badge variant="outline" className="rounded-full px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="max-w-full rounded-full px-3 py-1 break-all"
+                >
                   affiliate_id={SHOPEE_AFFILIATE_ID}
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-4 sm:px-6">
               {shouldShowProductImagePreview ? (
-                <div className="overflow-hidden rounded-3xl border border-border/70 bg-background/80">
-                  <div className="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3">
-                    <div>
+                <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80 sm:rounded-3xl">
+                  <div className="flex flex-col gap-3 border-b border-border/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">
                         Imagem do produto na publicação
                       </p>
@@ -664,7 +692,10 @@ export function ShopeeOfferGenerator() {
                         da Shopee será exibida.
                       </p>
                     </div>
-                    <Badge variant="outline" className="rounded-full px-3 py-1">
+                    <Badge
+                      variant="outline"
+                      className="w-fit max-w-full rounded-full px-3 py-1"
+                    >
                       POC visual
                     </Badge>
                   </div>
@@ -681,9 +712,9 @@ export function ShopeeOfferGenerator() {
                 </div>
               ) : null}
 
-              <div className="rounded-3xl border border-border/70 bg-background/70 p-4 shadow-inner">
+              <div className="rounded-2xl border border-border/70 bg-background/70 p-4 shadow-inner sm:rounded-3xl">
                 {generatedPreview ? (
-                  <pre className="font-sans text-sm leading-6 whitespace-pre-wrap text-foreground">
+                  <pre className="font-sans text-sm leading-6 whitespace-pre-wrap text-foreground wrap-anywhere">
                     {generatedPreview}
                   </pre>
                 ) : (
@@ -694,7 +725,7 @@ export function ShopeeOfferGenerator() {
               </div>
 
               <div className="grid gap-3">
-                <div className="rounded-3xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm">
+                <div className="rounded-2xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm sm:rounded-3xl">
                   <div className="mb-2 flex items-center gap-2 font-medium text-foreground">
                     <Link2 className="size-4" />
                     Simulação de links com afiliado
@@ -729,8 +760,13 @@ export function ShopeeOfferGenerator() {
                 ) : null}
               </div>
             </CardContent>
-            <CardFooter className="border-t border-border/60 pt-4">
-              <Button type="button" variant="outline" onClick={handleCopyOffer}>
+            <CardFooter className="border-t border-border/60 px-4 pt-4 sm:px-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={handleCopyOffer}
+              >
                 <Copy />
                 Copiar oferta
               </Button>
