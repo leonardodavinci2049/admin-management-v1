@@ -99,6 +99,19 @@ export const TAXONOMY_INLINE_ENDPOINTS = {
   UPDATE_SLUG: "/taxonomy-inline/v3/taxonomy-upd-inl-slug",
 } as const;
 
+// Endpoints de Shopee Operation
+export const SHOPEE_ENDPOINTS = {
+  GENERATE_AFFILIATE_LINK: "/shopee-operation/v1/generate-affiliate-link",
+  GET_PRODUCT_OFFERS: "/shopee-operation/v1/get-product-offers",
+  GET_SHOPEE_OFFERS: "/shopee-operation/v1/get-shopee-offers",
+} as const;
+
+// Endpoints de Promolinks
+export const PROMOLINKS_ENDPOINTS = {
+  LINK_GENERATION_FIND_ALL: "/promolinks/v2/link-generation-find-all",
+  PROMO_LINK_FIND_ALL: "/promolinks/v2/promo-link-find-all",
+} as const;
+
 // Endpoints de Taxonomy Rel (V3) - Relações taxonomia↔produto
 export const TAXONOMY_REL_ENDPOINTS = {
   FIND_ALL_PRODUCTS: "/taxonomy-rel/v3/taxonomy-rel-produto-all",

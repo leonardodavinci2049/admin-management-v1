@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -465,15 +464,11 @@ export function ShopeeOfferGenerator() {
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-48 bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.16),transparent_65%)] lg:block" />
 
         <div className="relative flex flex-col gap-5">
-   
           <div className="space-y-3">
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Gerador de ofertas Shopee
             </h1>
-    
           </div>
-
-   
         </div>
       </section>
 
@@ -484,7 +479,6 @@ export function ShopeeOfferGenerator() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <CardTitle>Modelo da oferta</CardTitle>
-           
                 </div>
                 <Badge
                   variant="outline"
@@ -526,15 +520,12 @@ export function ShopeeOfferGenerator() {
                   </TabsList>
                 </div>
               </Tabs>
-
- 
             </CardContent>
           </Card>
 
           <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
             <CardHeader className="px-4 sm:px-6">
               <CardTitle>Dados da oferta</CardTitle>
-     
             </CardHeader>
             <CardContent className="space-y-5 px-4 sm:px-6">
               {hasAttemptedSubmit && hasErrors ? (
@@ -593,7 +584,7 @@ export function ShopeeOfferGenerator() {
                         <p className="text-sm text-destructive">
                           {errorMessage}
                         </p>
-                      )  : null}
+                      ) : null}
                     </div>
                   );
                 })}
@@ -633,7 +624,6 @@ export function ShopeeOfferGenerator() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <CardTitle>Prévia da oferta</CardTitle>
-          
                 </div>
                 <Badge
                   variant="outline"
@@ -646,8 +636,6 @@ export function ShopeeOfferGenerator() {
             <CardContent className="space-y-4 px-4 sm:px-6">
               {shouldShowProductImagePreview ? (
                 <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80 sm:rounded-3xl">
-          
-
                   <div className="relative aspect-square w-full bg-muted/30">
                     <Image
                       src={SHOPEE_PRODUCT_PLACEHOLDER_IMAGE}
