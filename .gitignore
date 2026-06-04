@@ -49,6 +49,7 @@ next-env.d.ts
 /scripts
 /upload
 /docs
+/docs-api
 ecosystem.config.js
 .well-known
 AGENTS.md

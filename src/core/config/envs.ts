@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const shopeeEnvsSchema = z.object({
+  CREDENTIAL: z.string().min(1),
+  SECRETKEY: z.string().min(1),
+  AFFILIATEENDPOINT: z.string().url(),
+  AFFILIATESUBIDS: z.string().min(1),
+  AFFILIATETIMEOUT: z.coerce.number().positive(),
+  PAGE: z.coerce.number().int().positive(),
+  LIMIT: z.coerce.number().int().positive(),
+  SORTTYPE: z.coerce.number().int().positive(),
+});
+
 // Variáveis públicas (prefixo NEXT_PUBLIC_ — disponíveis no client e server)
 const publicEnvsSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -37,7 +48,31 @@ const serverEnvsSchema = z.object({
   WEBHOOK_REVALIDATE_URL1: z.string().url(),
   WEBHOOK_REVALIDATE_URL2: z.string().url(),
   WEBHOOK_REVALIDATE_URL3: z.string().url(),
+  SHOPEE_CREDENTIAL: z.string().min(1),
+  SHOPEE_SECRETKEY: z.string().min(1),
+  SHOPEE_AFFILIATEENDPOINT: z.string().url(),
+  SHOPEE_AFFILIATESUBIDS: z.string().min(1),
+  SHOPEE_AFFILIATETIMEOUT: z.coerce.number().positive(),
+  SHOPEE_PAGE: z.coerce.number().int().positive(),
+  SHOPEE_LIMIT: z.coerce.number().int().positive(),
+  SHOPEE_SORTTYPE: z.coerce.number().int().positive(),
 });
+
+type ServerEnvs = z.infer<typeof serverEnvsSchema>;
+type ShopeeEnvs = z.infer<typeof shopeeEnvsSchema>;
+
+function buildShopeeEnvs(serverEnvs: ServerEnvs): ShopeeEnvs {
+  return shopeeEnvsSchema.parse({
+    CREDENTIAL: serverEnvs.SHOPEE_CREDENTIAL,
+    SECRETKEY: serverEnvs.SHOPEE_SECRETKEY,
+    AFFILIATEENDPOINT: serverEnvs.SHOPEE_AFFILIATEENDPOINT,
+    AFFILIATESUBIDS: serverEnvs.SHOPEE_AFFILIATESUBIDS,
+    AFFILIATETIMEOUT: serverEnvs.SHOPEE_AFFILIATETIMEOUT,
+    PAGE: serverEnvs.SHOPEE_PAGE,
+    LIMIT: serverEnvs.SHOPEE_LIMIT,
+    SORTTYPE: serverEnvs.SHOPEE_SORTTYPE,
+  });
+}
 
 // --- Validação das variáveis públicas (client + server) ---
 const publicValidation = publicEnvsSchema.safeParse({
@@ -70,7 +105,7 @@ export const publicEnvs = publicValidation.success
   : ({} as z.infer<typeof publicEnvsSchema>);
 
 // --- Validação das variáveis de servidor (apenas server-side) ---
-let serverEnvsData = {} as z.infer<typeof serverEnvsSchema>;
+let serverEnvsData = {} as ServerEnvs & { SHOPEE: ShopeeEnvs };
 
 if (typeof window === "undefined") {
   const serverValidation = serverEnvsSchema.safeParse(process.env);
@@ -84,7 +119,10 @@ if (typeof window === "undefined") {
     );
   }
 
-  serverEnvsData = serverValidation.data;
+  serverEnvsData = {
+    ...serverValidation.data,
+    SHOPEE: buildShopeeEnvs(serverValidation.data),
+  };
 }
 
 export const serverEnvs = serverEnvsData;

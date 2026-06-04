@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -465,33 +464,10 @@ export function ShopeeOfferGenerator() {
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-48 bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.16),transparent_65%)] lg:block" />
 
         <div className="relative flex flex-col gap-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge className="rounded-full px-3 py-1">POC Shopee</Badge>
-            <Badge variant="outline" className="rounded-full px-3 py-1">
-              Mobile first
-            </Badge>
-            <Badge variant="outline" className="rounded-full px-3 py-1">
-              Dados fictícios editáveis
-            </Badge>
-          </div>
-
           <div className="space-y-3">
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Gerador de ofertas Shopee para validação com o cliente
+              Gerador de ofertas Shopee
             </h1>
-            <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
-              Escolha um modelo de publicação, ajuste os dados fictícios e gere
-              uma oferta pronta para copiar.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-            <span className="max-w-full rounded-full border border-border/70 bg-background/70 px-3 py-1 wrap-break-word">
-              Regra de afiliado simulada com ID temporário
-            </span>
-            <span className="max-w-full rounded-full border border-border/70 bg-background/70 px-3 py-1 wrap-break-word">
-              Textos finais sem CTA extra
-            </span>
           </div>
         </div>
       </section>
@@ -503,9 +479,6 @@ export function ShopeeOfferGenerator() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <CardTitle>Modelo da oferta</CardTitle>
-                  <CardDescription>
-                    Troque entre os três formatos aprovados para a POC.
-                  </CardDescription>
                 </div>
                 <Badge
                   variant="outline"
@@ -547,23 +520,12 @@ export function ShopeeOfferGenerator() {
                   </TabsList>
                 </div>
               </Tabs>
-
-              <div className="mt-4 rounded-2xl border border-dashed border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground sm:rounded-3xl">
-                <p className="font-medium text-foreground">
-                  {modelConfig.description}
-                </p>
-                <p className="mt-1">{modelConfig.previewHint}</p>
-              </div>
             </CardContent>
           </Card>
 
           <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
             <CardHeader className="px-4 sm:px-6">
               <CardTitle>Dados da oferta</CardTitle>
-              <CardDescription>
-                Preencha os campos obrigatórios e ajuste os dados fictícios
-                conforme o cenário.
-              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5 px-4 sm:px-6">
               {hasAttemptedSubmit && hasErrors ? (
@@ -622,10 +584,6 @@ export function ShopeeOfferGenerator() {
                         <p className="text-sm text-destructive">
                           {errorMessage}
                         </p>
-                      ) : field.helper ? (
-                        <p className="text-sm text-muted-foreground wrap-break-word">
-                          {field.helper}
-                        </p>
                       ) : null}
                     </div>
                   );
@@ -666,10 +624,6 @@ export function ShopeeOfferGenerator() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <CardTitle>Prévia da oferta</CardTitle>
-                  <CardDescription>
-                    O texto copiado será exatamente igual ao conteúdo exibido
-                    abaixo.
-                  </CardDescription>
                 </div>
                 <Badge
                   variant="outline"
@@ -682,24 +636,6 @@ export function ShopeeOfferGenerator() {
             <CardContent className="space-y-4 px-4 sm:px-6">
               {shouldShowProductImagePreview ? (
                 <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/80 sm:rounded-3xl">
-                  <div className="flex flex-col gap-3 border-b border-border/60 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground">
-                        Imagem do produto na publicação
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Placeholder visual para demonstrar onde a imagem da API
-                        da Shopee será exibida.
-                      </p>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="w-fit max-w-full rounded-full px-3 py-1"
-                    >
-                      POC visual
-                    </Badge>
-                  </div>
-
                   <div className="relative aspect-square w-full bg-muted/30">
                     <Image
                       src={SHOPEE_PRODUCT_PLACEHOLDER_IMAGE}
