@@ -4,6 +4,7 @@ import "server-only";
 export {
   generateShortLink,
   getItemFeedData,
+  getProductOfferList,
   listItemFeeds,
 } from "./api-shopee-affiliate.service";
 
@@ -16,6 +17,8 @@ export type {
   ItemFeedDataRow,
   ItemFeedListConnection,
   ItemFeedPageInfo,
+  PageInfo,
+  ProductOfferConnectionV2,
   ProductOfferV2,
   ShopeeGraphQLResponse,
   ShortLinkResult,
@@ -29,6 +32,8 @@ export {
   GetItemFeedDataSchema,
   type ListItemFeedsInput,
   ListItemFeedsSchema,
+  type ProductOfferV2Input,
+  ProductOfferV2Schema,
 } from "./validation/shopee-affiliate.schema";
 
 // generateShopeeAuthHeader é um detalhe de implementação interno — não exportar

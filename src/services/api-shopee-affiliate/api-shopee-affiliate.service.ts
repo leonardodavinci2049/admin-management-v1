@@ -6,12 +6,21 @@ import { envs } from "@/core/config/envs";
 import { createLogger } from "@/core/logger";
 import { executeShopeeGraphQL } from "@/services/api-shopee-affiliate/shopee-graphql";
 import linkGenerationService from "@/services/db/link-generation/link-generation.service";
+import {
+  GENERATE_SHORT_LINK_MUTATION,
+  GET_ITEM_FEED_DATA_QUERY,
+  LIST_ITEM_FEEDS_QUERY,
+  PRODUCT_OFFER_V2_QUERY,
+  SHOPEE_OFFER_V2_QUERY,
+} from "./query/data-query";
 import type {
   GenerateShortLinkResponse,
   ItemFeedDataConnection,
   ItemFeedListConnection,
   ProductOfferConnectionV2,
+  ProductOfferConnectionV2Raw,
   ProductOfferV2,
+  ProductOfferV2Raw,
   ShopeeOfferConnectionV2,
   ShortLinkResult,
 } from "./types/shopee-affiliate.types";
@@ -34,107 +43,6 @@ import {
 } from "./validation/shopee-affiliate.schema";
 
 const logger = createLogger("ApiShopeeAffiliateService");
-
-// Mutation GraphQL isolada como constante — fácil de manter e testar
-// A API Shopee não expõe um input type nomeado; as variáveis são escalares
-const GENERATE_SHORT_LINK_MUTATION = `
-  mutation GenerateShortLink($originUrl: String!, $subIds: [String!]) {
-    generateShortLink(input: { originUrl: $originUrl, subIds: $subIds }) {
-      shortLink
-    }
-  }
-`;
-
-const PRODUCT_OFFER_V2_QUERY = `
-  query ProductOfferV2($itemId: Int64, $shopId: Int64, $keyword: String, $sortType: Int, $page: Int, $isAMSOffer: Boolean, $isKeySeller: Boolean, $limit: Int) {
-    productOfferV2(itemId: $itemId, shopId: $shopId, keyword: $keyword, sortType: $sortType, page: $page, isAMSOffer: $isAMSOffer, isKeySeller: $isKeySeller, limit: $limit) {
-      nodes {
-        itemId
-        commissionRate
-        sellerCommissionRate
-        shopeeCommissionRate
-        commission
-        sales
-        priceMax
-        priceMin
-        productCatIds
-        ratingStar
-        priceDiscountRate
-        imageUrl
-        productName
-        shopId
-        shopName
-        shopType
-        productLink
-        offerLink
-        periodStartTime
-        periodEndTime
-      }
-      pageInfo {
-        page
-        limit
-        hasNextPage
-      }
-    }
-  }
-`;
-
-const SHOPEE_OFFER_V2_QUERY = `
-  query ShopeeOfferV2($keyword: String, $sortType: Int, $page: Int, $limit: Int) {
-    shopeeOfferV2(keyword: $keyword, sortType: $sortType, page: $page, limit: $limit) {
-      nodes {
-        commissionRate
-        imageUrl
-        offerLink
-        originalLink
-        offerName
-        offerType
-        categoryId
-        collectionId
-        periodStartTime
-        periodEndTime
-      }
-      pageInfo {
-        page
-        limit
-        hasNextPage
-      }
-    }
-  }
-`;
-
-const LIST_ITEM_FEEDS_QUERY = `
-  query ListItemFeeds($feedMode: FeedMode) {
-    listItemFeeds(feedMode: $feedMode) {
-      feeds {
-        datafeedId
-        datafeedName
-        referenceId
-        description
-        totalCount
-        date
-        feedMode
-      }
-    }
-  }
-`;
-
-const GET_ITEM_FEED_DATA_QUERY = `
-  query GetItemFeedData($datafeedId: String!, $offset: Int, $limit: Int) {
-    getItemFeedData(datafeedId: $datafeedId, offset: $offset, limit: $limit) {
-      rows {
-        columns
-        updateType
-      }
-      pageInfo {
-        offset
-        limit
-        totalCount
-        hasMore
-      }
-    }
-  }
-`;
 
 /**
  * Mapeia erros internos (Axios, rede) para mensagens seguras ao usuário.
@@ -366,14 +274,19 @@ export async function getProductOfferList(
   try {
     // 3. Executar query via cliente dedicado
     const data = await executeShopeeGraphQL<{
-      productOfferV2: ProductOfferConnectionV2;
+      productOfferV2: ProductOfferConnectionV2Raw;
     }>(PRODUCT_OFFER_V2_QUERY, variables);
 
     if (!data.productOfferV2) {
       throw new Error("Não foi possível obter a lista de ofertas de produtos");
     }
 
-    return data.productOfferV2;
+    // 4. Enriquecer cada produto com campos derivados/computados que
+    //    não são retornados pelo endpoint productOfferV2 da Shopee
+    return {
+      ...data.productOfferV2,
+      nodes: data.productOfferV2.nodes.map(enrichProductOffer),
+    };
   } catch (error) {
     logger.error("Falha ao obter lista de ofertas de produtos Shopee", {
       requestId,
@@ -381,6 +294,62 @@ export async function getProductOfferList(
     });
     throw new Error(toSafeErrorMessage(error));
   }
+}
+
+// Tipo OFFICIAL_SHOP do enum shopType da Shopee Affiliate API
+const SHOPEE_OFFICIAL_SHOP_TYPE = 1;
+const DEFAULT_CURRENCY = "BRL";
+const DEFAULT_LOCATION = "Brasil";
+
+/**
+ * Calcula o preço original (antes do desconto) a partir do preço promocional
+ * e do percentual de desconto retornados pela Shopee.
+ *
+ * Fórmula: originalPrice = priceMax / (1 - priceDiscountRate / 100)
+ *
+ * Retorna null se os dados forem insuficientes ou inválidos.
+ */
+function calculateOriginalPrice(
+  priceMax: string,
+  discountRate: number,
+): string | null {
+  const price = Number.parseFloat(priceMax);
+  if (!Number.isFinite(price) || price <= 0) {
+    return null;
+  }
+
+  if (
+    !Number.isFinite(discountRate) ||
+    discountRate <= 0 ||
+    discountRate >= 100
+  ) {
+    return price.toFixed(2);
+  }
+
+  const original = price / (1 - discountRate / 100);
+  return Number.isFinite(original) ? original.toFixed(2) : null;
+}
+
+/**
+ * Enriquece um ProductOfferV2Raw com os campos derivados/computados que não
+ * vêm diretamente da API da Shopee:
+ * - isOfficial: derivado de shopType (1 = OFFICIAL_SHOP / Shopee Mall)
+ * - currency / location: defaults do mercado brasileiro
+ * - originalPrice: calculado a partir do desconto
+ * - freeShipping / brandName: indisponíveis no endpoint, retornam null
+ */
+function enrichProductOffer(raw: ProductOfferV2Raw): ProductOfferV2 {
+  return {
+    ...raw,
+    isOfficial:
+      Array.isArray(raw.shopType) &&
+      raw.shopType.includes(SHOPEE_OFFICIAL_SHOP_TYPE),
+    freeShipping: null,
+    location: DEFAULT_LOCATION,
+    currency: DEFAULT_CURRENCY,
+    originalPrice: calculateOriginalPrice(raw.priceMax, raw.priceDiscountRate),
+    brandName: null,
+  };
 }
 
 /**
