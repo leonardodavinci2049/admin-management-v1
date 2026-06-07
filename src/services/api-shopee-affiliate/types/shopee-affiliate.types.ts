@@ -4,8 +4,8 @@ export interface ShortLinkResult {
   shortLink: string;
 }
 
-// ProductOfferV2
-export interface ProductOfferV2 {
+// ProductOfferV2 — campos retornados diretamente pelo GraphQL productOfferV2
+export interface ProductOfferV2Raw {
   itemId: number;
   commissionRate: string;
   sellerCommissionRate: string;
@@ -28,10 +28,31 @@ export interface ProductOfferV2 {
   periodEndTime: number;
 }
 
+// ProductOfferV2 — payload final exposto ao consumidor (raw + campos enriquecidos)
+// Os campos abaixo NÃO existem no schema da Shopee Affiliate Open API:
+// - isOfficial: derivado de shopType (1 = OFFICIAL_SHOP)
+// - currency: fixo "BRL" (mercado brasileiro)
+// - location: fixo "Brasil"
+// - originalPrice: calculado a partir de priceMax e priceDiscountRate
+// - freeShipping, brandName: não disponíveis pelo endpoint productOfferV2
+export interface ProductOfferV2 extends ProductOfferV2Raw {
+  isOfficial: boolean;
+  freeShipping: boolean | null;
+  location: string;
+  currency: string;
+  originalPrice: string | null;
+  brandName: string | null;
+}
+
 export interface PageInfo {
   page: number;
   limit: number;
   hasNextPage: boolean;
+}
+
+export interface ProductOfferConnectionV2Raw {
+  nodes: ProductOfferV2Raw[];
+  pageInfo: PageInfo;
 }
 
 export interface ProductOfferConnectionV2 {
