@@ -241,8 +241,11 @@ export type TblConfig = {
   SHOPEE_AFFILIATE_ENDPOINT?: string | null;
   SHOPEE_AFFILIATE_TIMEOUT?: string | null;
   SHOPEE_AFFILIATE_SUBIDS?: string | null;
-  CREATEDAT?: Date | null;
+  SHOPEE_PAGE?: number | null;
+  SHOPEE_SORTTYPE?: number | null;
+  SHOPEE_LIMIT?: number | null;
   UPDATEDAT?: Date | null;
+  CREATEDAT?: Date | null;
 };
 
 export type TblLinkGeneration = {
@@ -326,11 +329,70 @@ export type TblModule = {
   updatedAt?: Date | null;
 };
 
+export type TblNotes = {
+  id: number;
+  parentId?: number | null;
+  statusId?: number | null;
+  title?: string | null;
+  content?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+};
+
+export type TblNoteAssets = {
+  id: number;
+  userId?: number | null;
+  noteId: number;
+  typeId?: number | null;
+  name?: string | null;
+  url?: string | null;
+  local_path?: string | null;
+  extension?: string | null;
+  size?: string | null;
+  md5?: string | null;
+  notes?: string | null;
+  createdAt?: Date | null;
+};
+
+export type TblNoteConfig = {
+  id: number;
+  userId?: number | null;
+  meta_key?: string | null;
+  meta_value?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+};
+
+export type TblNoteMeta = {
+  id: number;
+  userId?: number | null;
+  noteId: number;
+  meta_key?: string | null;
+  meta_value?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+};
+
+export type TblNoteTag = {
+  id: number;
+  tag: string;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+};
+
+export type TblNoteTagRel = {
+  id: number;
+  noteId?: number | null;
+  tagId?: number | null;
+  createdAt?: Date | null;
+};
+
 export type TblPromoLink = {
   ID: number;
   UUID?: string | null;
   CLIENT_ID?: number | null;
   APP_ID?: number | null;
+  TYPE_ID?: number | null;
   LINK1?: string | null;
   LINK2?: string | null;
   LINK3?: string | null;
@@ -340,6 +402,7 @@ export type TblPromoLink = {
   SECRET_KEY1?: string | null;
   SECRET_KEY2?: string | null;
   SECRET_KEY3?: string | null;
+  ACTIVE_FLAG?: number | null;
   NOTES?: string | null;
   CREATEDAT?: Date | null;
   UPDATEDAT?: Date | null;
@@ -391,6 +454,16 @@ export type TblSystemConfiguration = {
   CONFIGURATION_NOTES?: string | null;
   CREATEDAT?: Date | null;
   UPDATEDAT?: Date | null;
+};
+
+export type TblTask = {
+  id: number;
+  descricao?: string | null;
+  observacao?: string | null;
+  status?: string | null;
+  dt_conclusao?: Date | null;
+  dt_previsao?: Date | null;
+  createdAt?: Date | null;
 };
 
 export type TblTelegramChat = {
