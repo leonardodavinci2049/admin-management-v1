@@ -30,6 +30,7 @@ export async function registerWebhook(): Promise<void> {
 
   try {
     await b.api.setWebhook(webhookUrl);
+    console.log(`[telegram:bot] Webhook registered: ${webhookUrl}`);
   } catch (error) {
     console.error("[telegram:bot] Failed to register webhook:", error);
     throw error;
