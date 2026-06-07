@@ -1,6 +1,10 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "edge") return;
 
+  const netModule = "node:n" + "et";
+  const { setDefaultAutoSelectFamilyAttemptTimeout } = await import(netModule);
+  setDefaultAutoSelectFamilyAttemptTimeout(5000);
+
   const botWebhookRegistrations = [
     {
       name: "bot-telegram",
