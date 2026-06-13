@@ -9,22 +9,65 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-import {
-  MODEL_CONTENT,
-  OFFER_MODELS,
-  type ShopeeOfferFormValues,
-} from "../../Mock/mock-data";
+type NoCouponOfferFormValues = {
+  emoji: string;
+  productName: string;
+  price: string;
+  priceDetails: string;
+  productLink: string;
+};
+
+type NoCouponFieldConfig = {
+  name: keyof NoCouponOfferFormValues;
+  label: string;
+  placeholder: string;
+  required?: boolean;
+  optional?: boolean;
+};
+
+const NO_COUPON_FIELDS: NoCouponFieldConfig[] = [
+  {
+    name: "productLink",
+    label: "Link do produto",
+    placeholder: "Cole o link do produto Shopee",
+    required: true,
+  },
+  {
+    name: "emoji",
+    label: "Emoji",
+    placeholder: "Ex.: 🧺",
+    required: true,
+  },
+  {
+    name: "productName",
+    label: "Nome do produto",
+    placeholder: "Digite o nome do produto",
+    required: true,
+  },
+  {
+    name: "price",
+    label: "Valor do produto",
+    placeholder: "Ex.: R$ 29,90",
+    required: true,
+  },
+  {
+    name: "priceDetails",
+    label: "Informação complementar do preço",
+    placeholder: "Ex.: no pix",
+    optional: true,
+  },
+];
 
 type NoCouponOfferFormProps = {
-  formValues: ShopeeOfferFormValues;
+  formValues: NoCouponOfferFormValues;
   hasAttemptedSubmit: boolean;
   hasErrors: boolean;
   validationErrors: Record<string, string>;
   onGeneratePreview: () => void;
   onResetExample: () => void;
   onValueChange: (
-    field: keyof ShopeeOfferFormValues,
-    value: ShopeeOfferFormValues[keyof ShopeeOfferFormValues],
+    field: keyof NoCouponOfferFormValues,
+    value: NoCouponOfferFormValues[keyof NoCouponOfferFormValues],
   ) => void;
 };
 
@@ -37,8 +80,6 @@ export function NoCouponOfferForm({
   onResetExample,
   onValueChange,
 }: NoCouponOfferFormProps) {
-  const fields = MODEL_CONTENT[OFFER_MODELS.withoutCoupon].fields;
-
   return (
     <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
       <CardHeader className="px-4 sm:px-6">
@@ -57,14 +98,12 @@ export function NoCouponOfferForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {fields.map((field) => {
+          {NO_COUPON_FIELDS.map((field) => {
             const errorMessage = hasAttemptedSubmit
               ? validationErrors[field.name]
               : undefined;
             const isWideField =
-              field.name === "productName" ||
-              field.name === "productLink" ||
-              field.name === "couponLink";
+              field.name === "productName" || field.name === "productLink";
 
             return (
               <div

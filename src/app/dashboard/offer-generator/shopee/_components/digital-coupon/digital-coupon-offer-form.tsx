@@ -9,22 +9,86 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-import {
-  MODEL_CONTENT,
-  OFFER_MODELS,
-  type ShopeeOfferFormValues,
-} from "../../Mock/mock-data";
+type DigitalCouponOfferFormValues = {
+  emoji: string;
+  productName: string;
+  price: string;
+  priceDetails: string;
+  productLink: string;
+  couponCode: string;
+  discountLabel: string;
+  couponLink: string;
+};
+
+type DigitalCouponFieldConfig = {
+  name: keyof DigitalCouponOfferFormValues;
+  label: string;
+  placeholder: string;
+  required?: boolean;
+  optional?: boolean;
+};
+
+const DIGITAL_COUPON_FIELDS: DigitalCouponFieldConfig[] = [
+  {
+    name: "productLink",
+    label: "Link do produto",
+    placeholder: "Cole o link do produto Shopee",
+    required: true,
+  },
+  {
+    name: "emoji",
+    label: "Emoji",
+    placeholder: "Ex.: 🍳",
+    required: true,
+  },
+  {
+    name: "productName",
+    label: "Nome do produto",
+    placeholder: "Digite o nome do produto",
+    required: true,
+  },
+  {
+    name: "price",
+    label: "Valor final com desconto",
+    placeholder: "Ex.: R$ 189,90",
+    required: true,
+  },
+  {
+    name: "priceDetails",
+    label: "Informação complementar do preço",
+    placeholder: "Ex.: com frete grátis",
+    optional: true,
+  },
+  {
+    name: "couponCode",
+    label: "Código do cupom",
+    placeholder: "Ex.: COZINHA20",
+    required: true,
+  },
+  {
+    name: "discountLabel",
+    label: "Tipo ou valor do desconto",
+    placeholder: "Ex.: R$ 20 OFF",
+    required: true,
+  },
+  {
+    name: "couponLink",
+    label: "Link para copiar e colar o cupom",
+    placeholder: "Cole o link do cupom",
+    required: true,
+  },
+];
 
 type DigitalCouponOfferFormProps = {
-  formValues: ShopeeOfferFormValues;
+  formValues: DigitalCouponOfferFormValues;
   hasAttemptedSubmit: boolean;
   hasErrors: boolean;
   validationErrors: Record<string, string>;
   onGeneratePreview: () => void;
   onResetExample: () => void;
   onValueChange: (
-    field: keyof ShopeeOfferFormValues,
-    value: ShopeeOfferFormValues[keyof ShopeeOfferFormValues],
+    field: keyof DigitalCouponOfferFormValues,
+    value: DigitalCouponOfferFormValues[keyof DigitalCouponOfferFormValues],
   ) => void;
 };
 
@@ -37,8 +101,6 @@ export function DigitalCouponOfferForm({
   onResetExample,
   onValueChange,
 }: DigitalCouponOfferFormProps) {
-  const fields = MODEL_CONTENT[OFFER_MODELS.couponCode].fields;
-
   return (
     <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
       <CardHeader className="px-4 sm:px-6">
@@ -57,7 +119,7 @@ export function DigitalCouponOfferForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {fields.map((field) => {
+          {DIGITAL_COUPON_FIELDS.map((field) => {
             const errorMessage = hasAttemptedSubmit
               ? validationErrors[field.name]
               : undefined;
