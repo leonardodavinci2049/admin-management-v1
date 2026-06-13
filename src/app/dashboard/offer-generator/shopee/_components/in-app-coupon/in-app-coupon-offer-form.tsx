@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 type InAppCouponOfferFormValues = {
   emoji: string;
@@ -18,59 +17,6 @@ type InAppCouponOfferFormValues = {
   discountLabel: string;
   couponLink: string;
 };
-
-type InAppCouponFieldConfig = {
-  name: keyof InAppCouponOfferFormValues;
-  label: string;
-  placeholder: string;
-  required?: boolean;
-  optional?: boolean;
-};
-
-const IN_APP_COUPON_FIELDS: InAppCouponFieldConfig[] = [
-  {
-    name: "productLink",
-    label: "Link do produto",
-    placeholder: "Cole o link do produto Shopee",
-    required: true,
-  },
-  {
-    name: "emoji",
-    label: "Emoji",
-    placeholder: "Ex.: 🎧",
-    required: true,
-  },
-  {
-    name: "productName",
-    label: "Nome do produto",
-    placeholder: "Digite o nome do produto",
-    required: true,
-  },
-  {
-    name: "price",
-    label: "Valor final com desconto",
-    placeholder: "Ex.: R$ 79,90",
-    required: true,
-  },
-  {
-    name: "priceDetails",
-    label: "Informação complementar do preço",
-    placeholder: "Ex.: na oferta relâmpago",
-    optional: true,
-  },
-  {
-    name: "discountLabel",
-    label: "Valor ou percentual do desconto",
-    placeholder: "Ex.: R$ 15",
-    required: true,
-  },
-  {
-    name: "couponLink",
-    label: "Link para resgatar o cupom",
-    placeholder: "Cole o link de resgate do cupom",
-    required: true,
-  },
-];
 
 type InAppCouponOfferFormProps = {
   formValues: InAppCouponOfferFormValues;
@@ -94,6 +40,24 @@ export function InAppCouponOfferForm({
   onResetExample,
   onValueChange,
 }: InAppCouponOfferFormProps) {
+  const productLinkError = hasAttemptedSubmit
+    ? validationErrors.productLink
+    : undefined;
+  const emojiError = hasAttemptedSubmit ? validationErrors.emoji : undefined;
+  const productNameError = hasAttemptedSubmit
+    ? validationErrors.productName
+    : undefined;
+  const priceError = hasAttemptedSubmit ? validationErrors.price : undefined;
+  const priceDetailsError = hasAttemptedSubmit
+    ? validationErrors.priceDetails
+    : undefined;
+  const discountLabelError = hasAttemptedSubmit
+    ? validationErrors.discountLabel
+    : undefined;
+  const couponLinkError = hasAttemptedSubmit
+    ? validationErrors.couponLink
+    : undefined;
+
   return (
     <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
       <CardHeader className="px-4 sm:px-6">
@@ -112,47 +76,143 @@ export function InAppCouponOfferForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {IN_APP_COUPON_FIELDS.map((field) => {
-            const errorMessage = hasAttemptedSubmit
-              ? validationErrors[field.name]
-              : undefined;
-            const isWideField =
-              field.name === "productName" ||
-              field.name === "productLink" ||
-              field.name === "couponLink";
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="productLink" className="min-w-0 flex-wrap">
+              Link do produto
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="productLink"
+              className="min-w-0"
+              value={formValues.productLink}
+              onChange={(event) =>
+                onValueChange("productLink", event.target.value)
+              }
+              placeholder="Cole o link do produto Shopee"
+              aria-invalid={Boolean(productLinkError)}
+            />
+            {productLinkError ? (
+              <p className="text-sm text-destructive">{productLinkError}</p>
+            ) : null}
+          </div>
 
-            return (
-              <div
-                key={field.name}
-                className={cn("space-y-2", isWideField && "sm:col-span-2")}
-              >
-                <Label htmlFor={field.name} className="min-w-0 flex-wrap">
-                  {field.label}
-                  {field.required ? (
-                    <span className="text-destructive">*</span>
-                  ) : null}
-                  {field.optional ? (
-                    <span className="text-xs font-normal text-muted-foreground">
-                      Opcional
-                    </span>
-                  ) : null}
-                </Label>
-                <Input
-                  id={field.name}
-                  className="min-w-0"
-                  value={formValues[field.name]}
-                  onChange={(event) =>
-                    onValueChange(field.name, event.target.value)
-                  }
-                  placeholder={field.placeholder}
-                  aria-invalid={Boolean(errorMessage)}
-                />
-                {errorMessage ? (
-                  <p className="text-sm text-destructive">{errorMessage}</p>
-                ) : null}
-              </div>
-            );
-          })}
+          <div className="space-y-2">
+            <Label htmlFor="emoji" className="min-w-0 flex-wrap">
+              Emoji
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="emoji"
+              className="min-w-0"
+              value={formValues.emoji}
+              onChange={(event) => onValueChange("emoji", event.target.value)}
+              placeholder="Ex.: 🎧"
+              aria-invalid={Boolean(emojiError)}
+            />
+            {emojiError ? (
+              <p className="text-sm text-destructive">{emojiError}</p>
+            ) : null}
+          </div>
+
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="productName" className="min-w-0 flex-wrap">
+              Nome do produto
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="productName"
+              className="min-w-0"
+              value={formValues.productName}
+              onChange={(event) =>
+                onValueChange("productName", event.target.value)
+              }
+              placeholder="Digite o nome do produto"
+              aria-invalid={Boolean(productNameError)}
+            />
+            {productNameError ? (
+              <p className="text-sm text-destructive">{productNameError}</p>
+            ) : null}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="price" className="min-w-0 flex-wrap">
+              Valor final com desconto
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="price"
+              className="min-w-0"
+              value={formValues.price}
+              onChange={(event) => onValueChange("price", event.target.value)}
+              placeholder="Ex.: R$ 79,90"
+              aria-invalid={Boolean(priceError)}
+            />
+            {priceError ? (
+              <p className="text-sm text-destructive">{priceError}</p>
+            ) : null}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="priceDetails" className="min-w-0 flex-wrap">
+              Informação complementar do preço
+              <span className="text-xs font-normal text-muted-foreground">
+                Opcional
+              </span>
+            </Label>
+            <Input
+              id="priceDetails"
+              className="min-w-0"
+              value={formValues.priceDetails}
+              onChange={(event) =>
+                onValueChange("priceDetails", event.target.value)
+              }
+              placeholder="Ex.: na oferta relâmpago"
+              aria-invalid={Boolean(priceDetailsError)}
+            />
+            {priceDetailsError ? (
+              <p className="text-sm text-destructive">{priceDetailsError}</p>
+            ) : null}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="discountLabel" className="min-w-0 flex-wrap">
+              Valor ou percentual do desconto
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="discountLabel"
+              className="min-w-0"
+              value={formValues.discountLabel}
+              onChange={(event) =>
+                onValueChange("discountLabel", event.target.value)
+              }
+              placeholder="Ex.: R$ 15"
+              aria-invalid={Boolean(discountLabelError)}
+            />
+            {discountLabelError ? (
+              <p className="text-sm text-destructive">{discountLabelError}</p>
+            ) : null}
+          </div>
+
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="couponLink" className="min-w-0 flex-wrap">
+              Link para resgatar o cupom
+              <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="couponLink"
+              className="min-w-0"
+              value={formValues.couponLink}
+              onChange={(event) =>
+                onValueChange("couponLink", event.target.value)
+              }
+              placeholder="Cole o link de resgate do cupom"
+              aria-invalid={Boolean(couponLinkError)}
+            />
+            {couponLinkError ? (
+              <p className="text-sm text-destructive">{couponLinkError}</p>
+            ) : null}
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
