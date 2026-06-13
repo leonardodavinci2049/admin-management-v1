@@ -9,22 +9,79 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-import {
-  MODEL_CONTENT,
-  OFFER_MODELS,
-  type ShopeeOfferFormValues,
-} from "../../Mock/mock-data";
+type InAppCouponOfferFormValues = {
+  emoji: string;
+  productName: string;
+  price: string;
+  priceDetails: string;
+  productLink: string;
+  discountLabel: string;
+  couponLink: string;
+};
+
+type InAppCouponFieldConfig = {
+  name: keyof InAppCouponOfferFormValues;
+  label: string;
+  placeholder: string;
+  required?: boolean;
+  optional?: boolean;
+};
+
+const IN_APP_COUPON_FIELDS: InAppCouponFieldConfig[] = [
+  {
+    name: "productLink",
+    label: "Link do produto",
+    placeholder: "Cole o link do produto Shopee",
+    required: true,
+  },
+  {
+    name: "emoji",
+    label: "Emoji",
+    placeholder: "Ex.: 🎧",
+    required: true,
+  },
+  {
+    name: "productName",
+    label: "Nome do produto",
+    placeholder: "Digite o nome do produto",
+    required: true,
+  },
+  {
+    name: "price",
+    label: "Valor final com desconto",
+    placeholder: "Ex.: R$ 79,90",
+    required: true,
+  },
+  {
+    name: "priceDetails",
+    label: "Informação complementar do preço",
+    placeholder: "Ex.: na oferta relâmpago",
+    optional: true,
+  },
+  {
+    name: "discountLabel",
+    label: "Valor ou percentual do desconto",
+    placeholder: "Ex.: R$ 15",
+    required: true,
+  },
+  {
+    name: "couponLink",
+    label: "Link para resgatar o cupom",
+    placeholder: "Cole o link de resgate do cupom",
+    required: true,
+  },
+];
 
 type InAppCouponOfferFormProps = {
-  formValues: ShopeeOfferFormValues;
+  formValues: InAppCouponOfferFormValues;
   hasAttemptedSubmit: boolean;
   hasErrors: boolean;
   validationErrors: Record<string, string>;
   onGeneratePreview: () => void;
   onResetExample: () => void;
   onValueChange: (
-    field: keyof ShopeeOfferFormValues,
-    value: ShopeeOfferFormValues[keyof ShopeeOfferFormValues],
+    field: keyof InAppCouponOfferFormValues,
+    value: InAppCouponOfferFormValues[keyof InAppCouponOfferFormValues],
   ) => void;
 };
 
@@ -37,8 +94,6 @@ export function InAppCouponOfferForm({
   onResetExample,
   onValueChange,
 }: InAppCouponOfferFormProps) {
-  const fields = MODEL_CONTENT[OFFER_MODELS.couponInApp].fields;
-
   return (
     <Card className="min-w-0 border border-border/60 bg-card/95 shadow-sm">
       <CardHeader className="px-4 sm:px-6">
@@ -57,7 +112,7 @@ export function InAppCouponOfferForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {fields.map((field) => {
+          {IN_APP_COUPON_FIELDS.map((field) => {
             const errorMessage = hasAttemptedSubmit
               ? validationErrors[field.name]
               : undefined;

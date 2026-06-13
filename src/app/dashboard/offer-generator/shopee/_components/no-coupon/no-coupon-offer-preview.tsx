@@ -15,17 +15,20 @@ import {
 } from "@/components/ui/card";
 
 import {
-  SHOPEE_AFFILIATE_ID,
-  SHOPEE_PRODUCT_PLACEHOLDER_IMAGE,
-  type ShopeeOfferFormValues,
-} from "../../Mock/mock-data";
-import {
   applyMockShopeeAffiliateId,
   isShopeeShortLink,
 } from "../shopee-offer-utils";
 
+const SHOPEE_AFFILIATE_ID = "poc-shopee-id";
+const SHOPEE_PRODUCT_PLACEHOLDER_IMAGE = "/images/product/no-image.jpeg";
+
+type NoCouponOfferFormValues = {
+  productName: string;
+  productLink: string;
+};
+
 type NoCouponOfferPreviewProps = {
-  formValues: ShopeeOfferFormValues;
+  formValues: NoCouponOfferFormValues;
   generatedPreview: string;
   previewId: string;
   onCopyOffer: () => void;

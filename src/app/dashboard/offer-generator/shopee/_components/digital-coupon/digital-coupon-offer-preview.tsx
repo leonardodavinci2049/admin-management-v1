@@ -14,16 +14,19 @@ import {
 } from "@/components/ui/card";
 
 import {
-  SHOPEE_AFFILIATE_ID,
-  type ShopeeOfferFormValues,
-} from "../../Mock/mock-data";
-import {
   applyMockShopeeAffiliateId,
   isShopeeShortLink,
 } from "../shopee-offer-utils";
 
+const SHOPEE_AFFILIATE_ID = "poc-shopee-id";
+
+type DigitalCouponOfferFormValues = {
+  productLink: string;
+  couponLink: string;
+};
+
 type DigitalCouponOfferPreviewProps = {
-  formValues: ShopeeOfferFormValues;
+  formValues: DigitalCouponOfferFormValues;
   generatedPreview: string;
   previewId: string;
   onCopyOffer: () => void;
